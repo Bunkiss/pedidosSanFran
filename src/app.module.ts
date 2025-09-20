@@ -14,9 +14,9 @@ import { UserModule } from './user/user.module';
       password: '42785122',
       database: 'pedidosSanFranDB',
       autoLoadEntities: true,
-      synchronize: true,
+      synchronize: false,
     }),
-    UserModule
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],
