@@ -15,10 +15,12 @@ export default new DataSource({
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
     entities: [__dirname + '/**/*.entity{.ts,.js}'],
-    migrations: [__dirname + '/database/migrations/*{.ts,.js}'],
+    migrations: [__dirname + '/src/database/migrations/*{.ts,.js}'],
 });
 
 /* Migraciones:
-npm run migration:generate --name=update_user
+npm run migration:generate --name=nombreDeLaMigracion
 npm run migration:run
+npm run migration:revert
+npm run migration:show
 */
