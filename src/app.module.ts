@@ -6,6 +6,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UserModule } from './user/user.module';
 import { VendorsModule } from './vendor/vendors.module';
 import { VendorScheduleModule } from './vendor-schedule/vendor-schedule.module';
+import { ProductModule } from './product/product.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { VendorScheduleModule } from './vendor-schedule/vendor-schedule.module';
     UserModule,
     VendorsModule,
     VendorScheduleModule,
+    ProductModule,
   ],
   controllers: [AppController],
   providers: [AppService],
