@@ -18,50 +18,66 @@ export class ProductService {
 
   async create(createProductDto: CreateProductDto): Promise<Product> {
     const { vendorId, ...data } = createProductDto;
+
     const vendor = await this.vendorRepository.findOne({ where: { id: vendorId } });
     if (!vendor) {
       throw new NotFoundException(`Vendor con ID ${vendorId} no encontrado`);
     }
 
-    const product = this.productRepository.create({ ...data, vendor });
-    return await this.productRepository.save(product);
+    const nuevoProducto = this.productRepository.create({
+      ...data,
+      vendor,
+    });
+
+    return await this.productRepository.save(nuevoProducto);
   }
 
   async findAll(): Promise<Product[]> {
-    return await this.productRepository.find({ relations: ['vendor'] });
+    return await this.productRepository.find({
+      relations: ['vendor'],
+      order: { id: 'ASC' },
+    });
   }
 
   async findOne(id: number): Promise<Product> {
-    const product = await this.productRepository.findOne({
+    const producto = await this.productRepository.findOne({
       where: { id },
       relations: ['vendor'],
     });
-    if (!product) {
+
+    if (!producto) {
       throw new NotFoundException(`Producto con ID ${id} no encontrado`);
     }
-    return product;
+
+    return producto;
   }
 
+
   async update(id: number, updateProductDto: UpdateProductDto): Promise<Product> {
-    const product = await this.findOne(id);
+    const producto = await this.findOne(id);
 
     if (updateProductDto.vendorId) {
-      const vendor = await this.vendorRepository.findOne({
+      const nuevoVendor = await this.vendorRepository.findOne({
         where: { id: updateProductDto.vendorId },
       });
-      if (!vendor) {
-        throw new NotFoundException(`Vendor con ID ${updateProductDto.vendorId} no encontrado`);
+
+      if (!nuevoVendor) {
+        throw new NotFoundException(
+          `Vendor con ID ${updateProductDto.vendorId} no encontrado`,
+        );
       }
-      product.vendor = vendor;
+
+      producto.vendor = nuevoVendor;
     }
 
-    Object.assign(product, updateProductDto);
-    return await this.productRepository.save(product);
+ 
+    Object.assign(producto, updateProductDto);
+
+    return await this.productRepository.save(producto);
   }
 
   async remove(id: number): Promise<void> {
-    const product = await this.findOne(id);
-    await this.productRepository.remove(product);
+    const producto = await this.findOne(id);
+    await this.productRepository.remove(producto);
   }
 }
-
