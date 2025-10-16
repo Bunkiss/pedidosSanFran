@@ -1,6 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column,OneToOne, CreateDateColumn, UpdateDateColumn, OneToMany, JoinColumn } from 'typeorm';
 import { VendorSchedule } from '../../vendor-schedule/entities/vendor-schedule.entity';
-
+import { User } from '../../user/entities/user.entity';
 @Entity('vendors')
 export class Vendor {
     @PrimaryGeneratedColumn()
@@ -13,7 +13,11 @@ export class Vendor {
     categoria: string;
 
     @OneToMany(() => VendorSchedule, schedule => schedule.vendor, { cascade: true })
-  schedules: VendorSchedule[];
+    schedules: VendorSchedule[];
+
+    @OneToOne(() => User, { eager: true })
+    @JoinColumn({ name: 'user_id' })
+    user: User;
 
     @CreateDateColumn({ name: 'created_at' })
     createdAt: Date;
