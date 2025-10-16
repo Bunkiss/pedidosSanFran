@@ -1,1 +1,4 @@
-export class CreateVendorDto {}
+export class CreateVendorDto {
+ nombre: string;
+ categoria: string;
+}
