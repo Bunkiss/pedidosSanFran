@@ -7,6 +7,7 @@ import { UserModule } from './user/user.module';
 import { VendorsModule } from './vendor/vendors.module';
 import { VendorScheduleModule } from './vendor-schedule/vendor-schedule.module';
 import { ProductModule } from './product/product.module';
+import { DriverModule } from './driver/driver.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { ProductModule } from './product/product.module';
     VendorsModule,
     VendorScheduleModule,
     ProductModule,
+    DriverModule,
   ],
   controllers: [AppController],
   providers: [AppService],
