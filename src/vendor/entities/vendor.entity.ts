@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
 import { VendorSchedule } from '../../vendor-schedule/entities/vendor-schedule.entity';
-import { Product } from 'src/product/entities/product.entity';
+import { Product } from '../../product/entities/product.entity';
 
 @Entity('vendors')
 export class Vendor {
