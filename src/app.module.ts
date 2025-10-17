@@ -7,6 +7,8 @@ import { UserModule } from './user/user.module';
 import { VendorsModule } from './vendor/vendors.module';
 import { VendorScheduleModule } from './vendor-schedule/vendor-schedule.module';
 import { ProductModule } from './product/product.module';
+import { DriverModule } from './driver/driver.module';
+import { VehicleModule } from './vehicle/vehicle.module';
 
 @Module({
   imports: [
@@ -30,6 +32,8 @@ import { ProductModule } from './product/product.module';
     VendorsModule,
     VendorScheduleModule,
     ProductModule,
+    DriverModule,
+    VehicleModule,
   ],
   controllers: [AppController],
   providers: [AppService],
