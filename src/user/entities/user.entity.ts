@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Vendor } from '../../vendor/entities/vendor.entity';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToOne } from 'typeorm';
 
 @Entity('users') // nombre de la tabla
 export class User {
@@ -28,4 +29,7 @@ export class User {
 
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
+
+    @OneToOne(() => Vendor, vendor => vendor.user)
+  vendor: Vendor;
 }
