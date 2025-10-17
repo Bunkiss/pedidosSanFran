@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column,OneToOne, CreateDateColumn, UpdateDateColumn, OneToMany, JoinColumn } from 'typeorm';
 import { VendorSchedule } from '../../vendor-schedule/entities/vendor-schedule.entity';
-import { Product } from 'src/product/entities/product.entity';
 import { User } from '../../user/entities/user.entity';
+import { Product } from '../../product/entities/product.entity';
 
 @Entity('vendors')
 export class Vendor {
