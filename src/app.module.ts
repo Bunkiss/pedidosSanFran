@@ -9,6 +9,8 @@ import { VendorScheduleModule } from './vendor-schedule/vendor-schedule.module';
 import { ProductModule } from './product/product.module';
 import { DriverModule } from './driver/driver.module';
 import { VehicleModule } from './vehicle/vehicle.module';
+import { OrderModule } from './order/order.module';
+import { OrderDetailModule } from './order-detail/order-detail.module';
 
 @Module({
   imports: [
@@ -34,6 +36,8 @@ import { VehicleModule } from './vehicle/vehicle.module';
     ProductModule,
     DriverModule,
     VehicleModule,
+    OrderModule,
+    OrderDetailModule,
   ],
   controllers: [AppController],
   providers: [AppService],

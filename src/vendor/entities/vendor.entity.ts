@@ -2,6 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column,OneToOne, CreateDateColumn, Upda
 import { VendorSchedule } from '../../vendor-schedule/entities/vendor-schedule.entity';
 import { User } from '../../user/entities/user.entity';
 import { Product } from '../../product/entities/product.entity';
+import { Order } from '../../order/entities/order.entity';
 
 @Entity('vendors')
 export class Vendor {
@@ -24,9 +25,12 @@ export class Vendor {
   @OneToMany(() => Product, product => product.vendor, { cascade: true })
   products: Product[];
 
+  @OneToMany(() => Order, (order) => order.vendor)
+  orders: Order[];
+  
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
-
+  
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
 }

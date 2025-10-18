@@ -1,7 +1,8 @@
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToOne, OneToMany } from 'typeorm';
 import { Vendor } from '../../vendor/entities/vendor.entity';
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToOne } from 'typeorm';
+import { Order } from '../../order/entities/order.entity';
 
-@Entity('users') // nombre de la tabla
+@Entity('users')
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
@@ -23,13 +24,16 @@ export class User {
 
   @Column({ default: true })
   estado: boolean;
+  
+  @OneToOne(() => Vendor, vendor => vendor.user)
+  vendor: Vendor;
+  
+  @OneToMany(() => Order, (order) => order.user)
+  orders: Order[];
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
-
-    @OneToOne(() => Vendor, vendor => vendor.user)
-  vendor: Vendor;
 }
