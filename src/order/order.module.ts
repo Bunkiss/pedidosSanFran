@@ -1,8 +1,15 @@
 import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Order } from './entities/order.entity';
+import { OrderDetail } from '../order-detail/entities/order-detail.entity';
+import { Vendor } from '../vendor/entities/vendor.entity';
+import { User } from '../user/entities/user.entity';
+import { Driver } from '../driver/entities/driver.entity';
 import { OrderService } from './order.service';
 import { OrderController } from './order.controller';
 
 @Module({
+  imports: [TypeOrmModule.forFeature([Order, OrderDetail, Vendor, User, Driver])],
   controllers: [OrderController],
   providers: [OrderService],
 })

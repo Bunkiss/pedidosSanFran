@@ -3,13 +3,13 @@ import { OrderDetailService } from './order-detail.service';
 import { CreateOrderDetailDto } from './dto/create-order-detail.dto';
 import { UpdateOrderDetailDto } from './dto/update-order-detail.dto';
 
-@Controller('order-detail')
+@Controller('order-details')
 export class OrderDetailController {
   constructor(private readonly orderDetailService: OrderDetailService) {}
 
-  @Post()
-  create(@Body() createOrderDetailDto: CreateOrderDetailDto) {
-    return this.orderDetailService.create(createOrderDetailDto);
+  @Post(':orderId')
+  create(@Param('orderId') orderId: string, @Body() dto: CreateOrderDetailDto) {
+    return this.orderDetailService.create(+orderId, dto);
   }
 
   @Get()
@@ -23,8 +23,8 @@ export class OrderDetailController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateOrderDetailDto: UpdateOrderDetailDto) {
-    return this.orderDetailService.update(+id, updateOrderDetailDto);
+  update(@Param('id') id: string, @Body() dto: UpdateOrderDetailDto) {
+    return this.orderDetailService.update(+id, dto);
   }
 
   @Delete(':id')
