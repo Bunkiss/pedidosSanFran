@@ -11,6 +11,7 @@ import { DriverModule } from './driver/driver.module';
 import { VehicleModule } from './vehicle/vehicle.module';
 import { OrderModule } from './order/order.module';
 import { OrderDetailModule } from './order-detail/order-detail.module';
+import { PaymentModule } from './payment/payment.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { OrderDetailModule } from './order-detail/order-detail.module';
     VehicleModule,
     OrderModule,
     OrderDetailModule,
+    PaymentModule,
   ],
   controllers: [AppController],
   providers: [AppService],

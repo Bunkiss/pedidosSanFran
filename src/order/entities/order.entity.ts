@@ -3,6 +3,7 @@ import { Vendor } from '../../vendor/entities/vendor.entity';
 import { User } from '../../user/entities/user.entity';
 import { Driver } from '../../driver/entities/driver.entity';
 import { OrderDetail } from '../../order-detail/entities/order-detail.entity';
+import { Payment } from '../../payment/entities/payment.entity';
 
 @Entity('orders')
 export class Order {
@@ -40,6 +41,9 @@ export class Order {
     cascade: true,
   })
   details: OrderDetail[];
+
+  @OneToMany(() => Payment, (payment) => payment.order)
+  payments: Payment[];
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
