@@ -7,9 +7,10 @@ import { User } from '../user/entities/user.entity';
 import { Driver } from '../driver/entities/driver.entity';
 import { OrderService } from './order.service';
 import { OrderController } from './order.controller';
+import { Payment } from '../payment/entities/payment.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Order, OrderDetail, Vendor, User, Driver])],
+  imports: [TypeOrmModule.forFeature([Order, OrderDetail, Vendor, User, Driver, Payment])],
   controllers: [OrderController],
   providers: [OrderService],
 })

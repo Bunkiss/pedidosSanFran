@@ -1,23 +1,28 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn } from 'typeorm';
-import { Order } from 'src/order/entities/order.entity';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, JoinColumn } from 'typeorm';
+import { Order } from '../../order/entities/order.entity';
 
-@Entity()
+@Entity('payments')
 export class Payment {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column('decimal', { precision: 10, scale: 2 })
+  @ManyToOne(() => Order, (order) => order.payments, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({ name: 'order_id' })
+  order: Order;
+
+  @Column({ type: 'enum', enum: ['pendiente', 'completado', 'fallido'], default: 'pendiente' })
+  estado: 'pendiente' | 'completado' | 'fallido';
+
+  @Column({ type: 'decimal', precision: 10, scale: 2 })
   monto: number;
 
-  @Column()
-  metodo: string;
+  @Column({ type: 'enum', enum: ['efectivo', 'tarjeta', 'transferencia'], default: 'efectivo' })
+  metodo: 'efectivo' | 'tarjeta' | 'transferencia';
 
-  @Column({ default: 'pendiente' })
-  estado: string;
-
-  @CreateDateColumn()
-  fecha_pago: Date;
-
-  @ManyToOne(() => Order, (order) => order.payments, { onDelete: 'CASCADE' })
-  order: Order;
+  @CreateDateColumn({ name: 'created_at' })
+  createdAt: Date;
 }
+
+

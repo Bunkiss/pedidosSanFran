@@ -8,6 +8,8 @@ import { Vendor } from '../vendor/entities/vendor.entity';
 import { User } from '../user/entities/user.entity';
 import { Driver } from '../driver/entities/driver.entity';
 import { OrderDetail } from '../order-detail/entities/order-detail.entity';
+import { PayOrderDto } from './dto/pay-order.dto';
+import { Payment } from '../payment/entities/payment.entity';
 
 @Injectable()
 export class OrderService {
@@ -17,6 +19,7 @@ export class OrderService {
     @InjectRepository(User) private userRepo: Repository<User>,
     @InjectRepository(Driver) private driverRepo: Repository<Driver>,
     @InjectRepository(OrderDetail) private detailRepo: Repository<OrderDetail>,
+    @InjectRepository(Payment) private paymentRepo: Repository<Payment>,
   ) {}
 
   async create(dto: CreateOrderDto): Promise<Order> {
@@ -39,7 +42,6 @@ if (dto.driverId) {
   if (driver) order.driver = driver;
 }
 
-    // Crear detalles
     order.details = dto.details.map((d) => this.detailRepo.create({
       product: { id: d.productId } as any,
       cantidad: d.cantidad,
@@ -50,7 +52,6 @@ if (dto.driverId) {
       metodo_pago: d.metodo_pago,
     }));
 
-    // Calcular total
     order.total = order.details.reduce((sum, det) => sum + Number(det.subtotal) + Number(det.impuestos) + Number(det.propina) + Number(det.costo_envio), 0);
 
     return this.orderRepo.save(order);
@@ -81,4 +82,27 @@ if (dto.driverId) {
     const order = await this.findOne(id);
     return this.orderRepo.remove(order);
   }
+
+  async payOrder(id: number, dto: PayOrderDto): Promise<Payment> {
+  const order = await this.orderRepo.findOne({
+    where: { id },
+    relations: ['payments'],
+  });
+
+  if (!order) throw new NotFoundException('Orden no encontrada');
+
+  const payment = this.paymentRepo.create({
+    order,
+    monto: dto.monto,
+    metodo: dto.metodo,
+    estado: 'completado',
+  });
+
+  await this.paymentRepo.save(payment);
+
+  order.estado = 'completado';
+  await this.orderRepo.save(order);
+
+  return payment;
+}
 }
