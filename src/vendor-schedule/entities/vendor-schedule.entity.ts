@@ -6,7 +6,7 @@ export class VendorSchedule {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'enum', enum: ['monday','tuesday','wednesday','thursday','friday','saturday','sunday'] })
+  @Column({ type: 'enum', enum: ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo'] })
   dia: string;
 
   @Column({ type: 'time' })

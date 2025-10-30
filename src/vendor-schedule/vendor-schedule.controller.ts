@@ -3,7 +3,7 @@ import { VendorScheduleService } from './vendor-schedule.service';
 import { CreateVendorScheduleDto } from './dto/create-vendor-schedule.dto';
 import { UpdateVendorScheduleDto } from './dto/update-vendor-schedule.dto';
 
-@Controller('vendor-schedule')
+@Controller('vendor-schedules')
 export class VendorScheduleController {
   constructor(private readonly vendorScheduleService: VendorScheduleService) {}
 

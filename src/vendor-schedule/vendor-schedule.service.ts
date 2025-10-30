@@ -1,26 +1,63 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { VendorSchedule } from './entities/vendor-schedule.entity';
 import { CreateVendorScheduleDto } from './dto/create-vendor-schedule.dto';
 import { UpdateVendorScheduleDto } from './dto/update-vendor-schedule.dto';
+import { Vendor } from '../vendor/entities/vendor.entity';
 
 @Injectable()
 export class VendorScheduleService {
-  create(createVendorScheduleDto: CreateVendorScheduleDto) {
-    return 'This action adds a new vendorSchedule';
+  constructor(
+    @InjectRepository(VendorSchedule)
+    private readonly vendorScheduleRepository: Repository<VendorSchedule>,
+    @InjectRepository(Vendor)
+    private readonly vendorRepository: Repository<Vendor>,
+  ) {}
+
+  async create(dto: CreateVendorScheduleDto): Promise<VendorSchedule> {
+    const vendor = await this.vendorRepository.findOne({ where: { id: dto.vendorId } });
+    if (!vendor) throw new NotFoundException(`Vendor con id ${dto.vendorId} no encontrado`);
+
+    const schedule = this.vendorScheduleRepository.create({
+      dia: dto.dia,
+      horaApertura: dto.horaApertura,
+      horaCierre: dto.horaCierre,
+      vendor,
+    });
+
+    return this.vendorScheduleRepository.save(schedule);
   }
 
-  findAll() {
-    return `This action returns all vendorSchedule`;
+  findAll(): Promise<VendorSchedule[]> {
+    return this.vendorScheduleRepository.find({ relations: ['vendor'] });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} vendorSchedule`;
+  async findOne(id: number): Promise<VendorSchedule> {
+    const schedule = await this.vendorScheduleRepository.findOne({
+      where: { id },
+      relations: ['vendor'],
+    });
+    if (!schedule) throw new NotFoundException(`Horario con id ${id} no encontrado`);
+    return schedule;
   }
 
-  update(id: number, updateVendorScheduleDto: UpdateVendorScheduleDto) {
-    return `This action updates a #${id} vendorSchedule`;
+  async update(id: number, dto: UpdateVendorScheduleDto): Promise<VendorSchedule> {
+    const schedule = await this.findOne(id);
+
+    if (dto.vendorId) {
+      const vendor = await this.vendorRepository.findOne({ where: { id: dto.vendorId } });
+      if (!vendor) throw new NotFoundException(`Vendor con id ${dto.vendorId} no encontrado`);
+      schedule.vendor = vendor;
+    }
+
+    Object.assign(schedule, dto);
+    return this.vendorScheduleRepository.save(schedule);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} vendorSchedule`;
+  async remove(id: number): Promise<void> {
+    const schedule = await this.findOne(id);
+    await this.vendorScheduleRepository.remove(schedule);
   }
 }
+
