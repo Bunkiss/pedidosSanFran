@@ -28,13 +28,13 @@ export class ProductController {
   }
   
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('vendor')
+  @Roles('vendor', 'admin')
   @Patch(':id')
    update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
     return this.productService.update(+id, updateProductDto);
    }
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('vendor')
+  @Roles('vendor','admin')
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.productService.remove(+id);

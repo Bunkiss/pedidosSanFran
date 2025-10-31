@@ -1,7 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { VendorsService } from './vendors.service'; 
 import { CreateVendorDto } from './dto/create-vendor.dto';
 import { UpdateVendorDto } from './dto/update-vendor.dto';
+import { Roles } from '../auth/roles.decorator';
+import { JwtAuthGuard } from '../auth/jwt.guard';
+import { RolesGuard } from '../auth/roles.guard';
 
 @Controller('vendors')
 export class VendorsController { 
@@ -26,7 +29,8 @@ export class VendorsController {
   update(@Param('id') id: string, @Body() updateVendorDto: UpdateVendorDto) {
     return this.vendorsService.update(+id, updateVendorDto);
   }
-
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.vendorsService.remove(+id);
