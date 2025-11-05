@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { Product } from './entities/product.entity';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { Vendor } from 'src/vendor/entities/vendor.entity';
+import { Vendor } from '../vendor/entities/vendor.entity';
 
 @Injectable()
 export class ProductService {

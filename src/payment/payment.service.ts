@@ -1,4 +1,3 @@
-
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -13,6 +12,9 @@ export class PaymentService {
   ) {}
 
   async create(orderId: number, metodo: string, monto: number) {
+    const existingPayment = await this.paymentRepo.findOne({ where: { order: { id: orderId } } });
+    if (existingPayment) throw new BadRequestException('Esta orden ya tiene un pago registrado');
+
     const order = await this.orderRepo.findOneBy({ id: orderId });
     if (!order) throw new NotFoundException('Orden no encontrada');
 
@@ -23,7 +25,7 @@ export class PaymentService {
       estado: 'completado',
     });
 
-    order.estado = 'en_proceso';
+    order.estado = 'completado';
     await this.orderRepo.save(order);
 
     return this.paymentRepo.save(payment);
@@ -32,5 +34,12 @@ export class PaymentService {
   async findAll() {
     return this.paymentRepo.find({ relations: ['order'] });
   }
+
+  async findOne(id: number) {
+    const payment = await this.paymentRepo.findOne({ where: { id }, relations: ['order'] });
+    if (!payment) throw new NotFoundException(`Pago con id ${id} no encontrado`);
+    return payment;
+  }
 }
+
 
