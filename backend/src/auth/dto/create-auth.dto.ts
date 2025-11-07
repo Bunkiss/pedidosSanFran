@@ -12,5 +12,5 @@ export class CreateAuthDto {
   contraseña: string;
 
   @IsString()
-  rol: string; // 'cliente' | 'driver' | 'vendor' | 'admin'
+  rol: 'cliente' | 'driver' | 'vendor' | 'admin'
 }

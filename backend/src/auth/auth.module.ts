@@ -6,10 +6,12 @@ import { PassportModule } from '@nestjs/passport';
 import { User } from '../user/entities/user.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtStrategy } from './jwt.strategy';
+import { Driver } from '../driver/entities/driver.entity';
+import { Vendor } from '../vendor/entities/vendor.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([User,Driver,Vendor]),
     PassportModule,
     JwtModule.register({
       secret: process.env.JWT_SECRET || 'supersecretkey',

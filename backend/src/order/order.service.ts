@@ -1,108 +1,141 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, IsNull } from 'typeorm';
 import { Order } from './entities/order.entity';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { Vendor } from '../vendor/entities/vendor.entity';
 import { User } from '../user/entities/user.entity';
 import { Driver } from '../driver/entities/driver.entity';
-import { OrderDetail } from '../order-detail/entities/order-detail.entity';
-import { PayOrderDto } from './dto/pay-order.dto';
-import { Payment } from '../payment/entities/payment.entity';
 
 @Injectable()
 export class OrderService {
   constructor(
-    @InjectRepository(Order) private orderRepo: Repository<Order>,
-    @InjectRepository(Vendor) private vendorRepo: Repository<Vendor>,
-    @InjectRepository(User) private userRepo: Repository<User>,
-    @InjectRepository(Driver) private driverRepo: Repository<Driver>,
-    @InjectRepository(OrderDetail) private detailRepo: Repository<OrderDetail>,
-    @InjectRepository(Payment) private paymentRepo: Repository<Payment>,
+    @InjectRepository(Order)
+    private readonly orderRepo: Repository<Order>,
+
+    @InjectRepository(Vendor)
+    private readonly vendorRepo: Repository<Vendor>,
+
+    @InjectRepository(User)
+    private readonly userRepo: Repository<User>,
+
+    @InjectRepository(Driver)
+    private readonly driverRepo: Repository<Driver>,
   ) {}
 
-  async create(dto: CreateOrderDto): Promise<Order> {
+  // 🟢 Crear pedido
+  async create(dto: CreateOrderDto) {
+    const vendor = await this.vendorRepo.findOne({ where: { id: dto.vendorId } });
+    const client = await this.userRepo.findOne({ where: { id: dto.clientId } });
+
+    if (!vendor) throw new NotFoundException('Vendedor no encontrado');
+    if (!client) throw new NotFoundException('Cliente no encontrado');
+
     const order = this.orderRepo.create({
-      estado: dto.estado,
+      ...dto,
+      vendor,
+      client,
+      estado: 'pendiente',
     });
 
-  if (dto.vendorId) {
-  const vendor = await this.vendorRepo.findOneBy({ id: dto.vendorId });
-  if (vendor) order.vendor = vendor;
+    return await this.orderRepo.save(order);
   }
 
-  if (dto.userId) {
-  const user = await this.userRepo.findOneBy({ id: dto.userId });
-  if (user) order.user = user;
-  }
-
-if (dto.driverId) {
-  const driver = await this.driverRepo.findOneBy({ id: dto.driverId });
-  if (driver) order.driver = driver;
-}
-
-    order.details = dto.details.map((d) => this.detailRepo.create({
-      product: { id: d.productId } as any,
-      cantidad: d.cantidad,
-      subtotal: d.subtotal,
-      impuestos: d.impuestos,
-      propina: d.propina,
-      costo_envio: d.costo_envio,
-      metodo_pago: d.metodo_pago,
-    }));
-
-    order.total = order.details.reduce((sum, det) => sum + Number(det.subtotal) + Number(det.impuestos) + Number(det.propina) + Number(det.costo_envio), 0);
-
-    return this.orderRepo.save(order);
-  }
-
+  // 🟢 Obtener todos los pedidos
   findAll() {
     return this.orderRepo.find({
-      relations: ['vendor', 'user', 'driver', 'details', 'details.product'],
+      relations: ['vendor', 'client', 'driver', 'details', 'details.product'],
+      order: { createdAt: 'DESC' },
     });
   }
 
+  // 🟢 Obtener un pedido por ID
   async findOne(id: number) {
     const order = await this.orderRepo.findOne({
       where: { id },
-      relations: ['vendor', 'user', 'driver', 'details', 'details.product'],
+      relations: ['vendor', 'client', 'driver', 'details', 'details.product'],
     });
-    if (!order) throw new NotFoundException('Orden no encontrada');
+
+    if (!order) throw new NotFoundException(`Pedido con ID ${id} no encontrado`);
     return order;
   }
 
+  // 🟢 Pedidos disponibles (sin driver y pendientes)
+  async findAvailable() {
+    return this.orderRepo.find({
+      where: { estado: 'pendiente', driver: IsNull() },
+      relations: ['vendor', 'client', 'details', 'details.product'],
+      order: { createdAt: 'DESC' },
+    });
+  }
+
+  // 🟢 Pedidos por vendor
+  async findByVendor(vendorId: number) {
+    return this.orderRepo.find({
+      where: { vendor: { id: vendorId } },
+      relations: ['vendor', 'client', 'driver', 'details', 'details.product'],
+      order: { createdAt: 'DESC' },
+    });
+  }
+
+  // 🟢 Pedidos por cliente
+  async findByClient(clientId: number) {
+    return this.orderRepo.find({
+      where: { client: { id: clientId } },
+      relations: ['vendor', 'client', 'driver', 'details', 'details.product'],
+      order: { createdAt: 'DESC' },
+    });
+  }
+
+  // 🟢 Pedidos por driver
+  async findByDriver(driverId: number) {
+    const driver = await this.driverRepo.findOne({ where: { id: driverId } });
+    if (!driver) throw new NotFoundException('Conductor no encontrado');
+
+    return this.orderRepo.find({
+      where: { driver: { id: driverId } },
+      relations: ['vendor', 'client', 'details', 'details.product'],
+      order: { createdAt: 'DESC' },
+    });
+  }
+
+  // 🟢 Actualizar pedido
   async update(id: number, dto: UpdateOrderDto) {
     const order = await this.findOne(id);
     Object.assign(order, dto);
     return this.orderRepo.save(order);
   }
 
+  // 🟢 Actualizar estado del pedido
+  async updateStatus(id: number, estado: string) {
+  const order = await this.orderRepo.findOne({ where: { id } });
+  if (!order) throw new NotFoundException('Pedido no encontrado');
+
+  order.estado = estado as
+  | 'pendiente'
+  | 'confirmado'
+  | 'en_camino'
+  | 'entregado'
+  | 'cancelado'
+  | 'completado';
+}
+
+
+  // 🟢 Eliminar pedido
   async remove(id: number) {
     const order = await this.findOne(id);
-    return this.orderRepo.remove(order);
+    await this.orderRepo.remove(order);
+    return { message: 'Pedido eliminado correctamente' };
   }
 
-  async payOrder(id: number, dto: PayOrderDto): Promise<Payment> {
-  const order = await this.orderRepo.findOne({
-    where: { id },
-    relations: ['payments'],
-  });
-
-  if (!order) throw new NotFoundException('Orden no encontrada');
-
-  const payment = this.paymentRepo.create({
-    order,
-    monto: dto.monto,
-    metodo: dto.metodo,
-    estado: 'completado',
-  });
-
-  await this.paymentRepo.save(payment);
+async payOrder(orderId: number, dto: any) {
+  const order = await this.findOne(orderId);
+  if (!order) throw new NotFoundException('Pedido no encontrado');
 
   order.estado = 'completado';
   await this.orderRepo.save(order);
 
-  return payment;
+  return { message: 'Pago registrado correctamente', order };
 }
 }

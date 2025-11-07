@@ -9,25 +9,24 @@ import { UpdateVendorDto } from './dto/update-vendor.dto';
 export class VendorsService {
   constructor(
     @InjectRepository(Vendor)
-    private readonly vendorRepository: Repository<Vendor>,
+    private readonly vendorRepo: Repository<Vendor>,
   ) {}
 
-  async create(createVendorDto: CreateVendorDto): Promise<Vendor> {
-    const nuevoVendor = this.vendorRepository.create(createVendorDto);
-    return await this.vendorRepository.save(nuevoVendor);
+  async create(dto: CreateVendorDto): Promise<Vendor> {
+    const vendor = this.vendorRepo.create(dto);
+    return this.vendorRepo.save(vendor);
   }
 
   async findAll(): Promise<Vendor[]> {
-    return await this.vendorRepository.find({
-      relations: ['schedules'],
-      order: { id: 'ASC' },
+    return this.vendorRepo.find({
+      relations: ['products', 'user'],
     });
   }
 
   async findOne(id: number): Promise<Vendor> {
-    const vendor = await this.vendorRepository.findOne({
+    const vendor = await this.vendorRepo.findOne({
       where: { id },
-      relations: ['schedules'],
+      relations: ['products', 'user'],
     });
 
     if (!vendor) {
@@ -37,14 +36,23 @@ export class VendorsService {
     return vendor;
   }
 
-  async update(id: number, updateVendorDto: UpdateVendorDto): Promise<Vendor> {
+  async update(id: number, dto: UpdateVendorDto): Promise<Vendor> {
     const vendor = await this.findOne(id);
-    Object.assign(vendor, updateVendorDto);
-    return await this.vendorRepository.save(vendor);
+    Object.assign(vendor, dto);
+    return this.vendorRepo.save(vendor);
   }
 
-  async remove(id: number): Promise<void> {
+  async remove(id: number) {
     const vendor = await this.findOne(id);
-    await this.vendorRepository.remove(vendor);
+    return this.vendorRepo.remove(vendor);
+  }
+
+  // 🟢 Endpoint público (para mostrar en el Home o VendorsView)
+  async findAllPublic(): Promise<Vendor[]> {
+    return this.vendorRepo.find({
+      // ❗ Si tenés columna `estado`, mantené esto. Si no, borrá la línea `where: { estado: 1 },`
+      // where: { estado: 1 },
+      relations: ['products'],
+    });
   }
 }

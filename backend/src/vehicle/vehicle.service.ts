@@ -30,7 +30,37 @@ export class VehicleService {
     return await this.vehicleRepo.save(vehicle);
   }
 
+  async createForDriver(driverId: number, dto: CreateVehicleDto): Promise<Vehicle> {
+    const driver = await this.driverRepo.findOne({ where: { id: driverId } });
+    if (!driver) throw new NotFoundException(`Driver con ID ${driverId} no encontrado`);
+
+    const vehicle = this.vehicleRepo.create({
+      tipo: dto.tipo,
+      marca: dto.marca,
+      modelo: dto.modelo,
+      patente: dto.patente,
+      activo: dto.activo ?? true,
+      driver,
+    });
+
+    return await this.vehicleRepo.save(vehicle);
+  }
+
   findAll(): Promise<Vehicle[]> {
     return this.vehicleRepo.find({ relations: ['driver'] });
+  }
+
+  async getByDriver(driverId: number): Promise<Vehicle[]> {
+    return this.vehicleRepo.find({
+      where: { driver: { id: driverId } },
+      relations: ['driver'],
+    });
+  }
+
+  async remove(id: number) {
+    const result = await this.vehicleRepo.delete(id);
+    if (result.affected === 0)
+      throw new NotFoundException('Vehículo no encontrado');
+    return { message: 'Vehículo eliminado correctamente' };
   }
 }

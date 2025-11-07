@@ -12,8 +12,12 @@ export class UserController {
 
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
-  }
+    return this.userService.create({
+  ...createUserDto,
+  rol: createUserDto.rol as 'cliente' | 'vendor' | 'driver' | 'admin',
+  });  
+}
+
 
   @Get()
   findAll() {
@@ -27,8 +31,12 @@ export class UserController {
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
+    return this.userService.update(+id, {
+      ...updateUserDto,
+      rol: updateUserDto.rol as 'cliente' | 'vendor' | 'driver' | 'admin',
+    });
   }
+
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('admin')
   @Delete(':id')

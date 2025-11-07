@@ -80,4 +80,19 @@ export class ProductService {
     const producto = await this.findOne(id);
     await this.productRepository.remove(producto);
   }
+
+  async findByVendor(vendorId: number): Promise<Product[]> {
+  const vendor = await this.vendorRepository.findOne({ where: { id: vendorId } });
+
+  if (!vendor) {
+    throw new NotFoundException(`Vendor con ID ${vendorId} no encontrado`);
+  }
+
+  return this.productRepository.find({
+    where: { vendor: { id: vendorId } },
+    relations: ['vendor'],
+    order: { id: 'ASC' },
+  });
+  }
+
 }

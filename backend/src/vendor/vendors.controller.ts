@@ -1,20 +1,30 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
-import { VendorsService } from './vendors.service'; 
+import { VendorsService } from './vendors.service';
 import { CreateVendorDto } from './dto/create-vendor.dto';
 import { UpdateVendorDto } from './dto/update-vendor.dto';
-import { Roles } from '../auth/roles.decorator';
 import { JwtAuthGuard } from '../auth/jwt.guard';
 import { RolesGuard } from '../auth/roles.guard';
+import { Roles } from '../auth/roles.decorator';
 
 @Controller('vendors')
-export class VendorsController { 
+export class VendorsController {
   constructor(private readonly vendorsService: VendorsService) {}
 
-  @Post()
-  create(@Body() createVendorDto: CreateVendorDto) {
-    return this.vendorsService.create(createVendorDto);
+  // 🟢 Público: accesible sin autenticación
+  @Get('public')
+  findAllPublic() {
+    return this.vendorsService.findAllPublic();
   }
 
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
+  @Post()
+  create(@Body() dto: CreateVendorDto) {
+    return this.vendorsService.create(dto);
+  }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin', 'vendor')
   @Get()
   findAll() {
     return this.vendorsService.findAll();
@@ -25,10 +35,13 @@ export class VendorsController {
     return this.vendorsService.findOne(+id);
   }
 
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin', 'vendor')
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateVendorDto: UpdateVendorDto) {
-    return this.vendorsService.update(+id, updateVendorDto);
+  update(@Param('id') id: string, @Body() dto: UpdateVendorDto) {
+    return this.vendorsService.update(+id, dto);
   }
+
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('admin')
   @Delete(':id')

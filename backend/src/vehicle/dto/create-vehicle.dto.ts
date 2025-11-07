@@ -21,8 +21,7 @@ export class CreateVehicleDto {
   @IsBoolean()
   activo?: boolean;
 
+  @IsOptional()
   @IsNumber()
-  @IsNotEmpty({ message: 'Debe especificarse el ID del conductor asociado' })
-  driverId: number;
+  driverId?: number; // lo dejamos opcional porque el driverId vendrá desde la URL en rutas anidadas
 }
-

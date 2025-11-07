@@ -3,9 +3,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Vendor } from './entities/vendor.entity';
 import { VendorsController } from './vendors.controller';
 import { VendorsService } from './vendors.service';
+import { User } from 'src/user/entities/user.entity';
+import { VendorSchedule } from 'src/vendor-schedule/entities/vendor-schedule.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Vendor])],
+  imports: [TypeOrmModule.forFeature([Vendor,User,VendorSchedule])],
   controllers: [VendorsController],
   providers: [VendorsService],
   exports: [VendorsService],

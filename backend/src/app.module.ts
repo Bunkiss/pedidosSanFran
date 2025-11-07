@@ -17,18 +17,20 @@ import { AuthModule } from './auth/auth.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: `.env.${process.env.NODE_ENV}`,
+      isGlobal: true,
+      envFilePath: '.env', // ✅ ahora sí toma tus credenciales reales
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: (ConfigService: ConfigService) => ({
+      useFactory: (configService: ConfigService) => ({
         type: 'mysql',
-        host: ConfigService.get<string>('DB_HOST'),
-        port: ConfigService.get<number>('DB_PORT'),
-        username: ConfigService.get<string>('DB_USERNAME'),
-        password: ConfigService.get<string>('DB_PASSWORD'),
-        database: ConfigService.get<string>('DB_NAME'),
-        entities: [__dirname + '/**/*.entity{.ts,.js}'],
+        host: configService.get<string>('DB_HOST'),
+        port: configService.get<number>('DB_PORT'),
+        username: configService.get<string>('DB_USERNAME'),
+        password: configService.get<string>('DB_PASSWORD'),
+        database: configService.get<string>('DB_NAME'),
+        autoLoadEntities: true,
+        synchronize: true,
       }),
       inject: [ConfigService],
     }),

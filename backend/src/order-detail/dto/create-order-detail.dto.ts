@@ -1,4 +1,4 @@
-import { IsNumber, IsEnum, IsOptional } from 'class-validator';
+import { IsNumber, IsEnum } from 'class-validator';
 
 export class CreateOrderDetailDto {
   @IsNumber()
@@ -10,17 +10,14 @@ export class CreateOrderDetailDto {
   @IsNumber()
   subtotal: number;
 
-  @IsOptional()
   @IsNumber()
-  impuestos?: number;
+  impuestos: number;
 
-  @IsOptional()
   @IsNumber()
-  propina?: number;
+  propina: number;
 
-  @IsOptional()
   @IsNumber()
-  costo_envio?: number;
+  costo_envio: number;
 
   @IsEnum(['efectivo', 'tarjeta', 'transferencia'])
   metodo_pago: 'efectivo' | 'tarjeta' | 'transferencia';
