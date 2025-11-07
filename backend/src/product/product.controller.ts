@@ -17,8 +17,6 @@ export class ProductController {
     return this.productService.create(createProductDto);
   }
 
-
-
   @Get()
   findAll() {
     return this.productService.findAll();
@@ -31,23 +29,24 @@ export class ProductController {
   
   @Get('vendor/:vendorId')
   findByVendor(@Param('vendorId') vendorId: string) {
-  console.log('🧩 Vendor ID recibido:', vendorId);
+    console.log('Vendor ID recibido:', vendorId);
 
-  const id = Number(vendorId);
-  if (isNaN(id)) {
-    console.warn('⚠️ vendorId inválido recibido:', vendorId);
-    throw new Error('El vendorId proporcionado no es válido.');
+    const id = Number(vendorId);
+    if (isNaN(id)) {
+      console.warn('vendorId inválido recibido:', vendorId);
+      throw new Error('El vendorId proporcionado no es válido.');
+    }
+
+    return this.productService.findByVendor(id);
   }
-
-  return this.productService.findByVendor(id);
-}
   
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('vendor', 'admin')
   @Patch(':id')
-   update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
+  update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
     return this.productService.update(+id, updateProductDto);
-   }
+  }
+  
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('vendor','admin')
   @Delete(':id')

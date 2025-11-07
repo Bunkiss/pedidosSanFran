@@ -47,10 +47,9 @@ export class VendorsService {
     return this.vendorRepo.remove(vendor);
   }
 
-  // 🟢 Endpoint público (para mostrar en el Home o VendorsView)
   async findAllPublic(): Promise<Vendor[]> {
     return this.vendorRepo.find({
-      // ❗ Si tenés columna `estado`, mantené esto. Si no, borrá la línea `where: { estado: 1 },`
+      // Si tenés columna `estado`, mantené esto. Si no, borrá la línea `where: { estado: 1 },`
       // where: { estado: 1 },
       relations: ['products'],
     });

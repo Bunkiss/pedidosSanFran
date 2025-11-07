@@ -13,11 +13,10 @@ export class UserController {
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
     return this.userService.create({
-  ...createUserDto,
-  rol: createUserDto.rol as 'cliente' | 'vendor' | 'driver' | 'admin',
-  });  
-}
-
+      ...createUserDto,
+      rol: createUserDto.rol as 'cliente' | 'vendor' | 'driver' | 'admin',
+    });  
+  }
 
   @Get()
   findAll() {

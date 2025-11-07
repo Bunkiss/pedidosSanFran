@@ -5,7 +5,6 @@ import { Roles } from '../auth/roles.decorator';
 import { JwtAuthGuard } from '../auth/jwt.guard';
 import { RolesGuard } from '../auth/roles.guard';
 
-// Controlador general para /vehicles
 @Controller('vehicles')
 export class VehicleController {
   constructor(private readonly vehicleService: VehicleService) {}
@@ -28,7 +27,6 @@ export class VehicleController {
   }
 }
 
-// Controlador anidado para /driver/:driverId/vehicles
 @Controller('driver/:driverId/vehicles')
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles('admin', 'driver')

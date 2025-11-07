@@ -9,6 +9,7 @@ import { RolesGuard } from '../auth/roles.guard';
 @Controller('order-details')
 export class OrderDetailController {
   constructor(private readonly orderDetailService: OrderDetailService) {}
+  
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('admin')
   @Post(':orderId')
@@ -25,12 +26,14 @@ export class OrderDetailController {
   findOne(@Param('id') id: string) {
     return this.orderDetailService.findOne(+id);
   }
+
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('admin')
   @Patch(':id')
   update(@Param('id') id: string, @Body() dto: UpdateOrderDetailDto) {
     return this.orderDetailService.update(+id, dto);
   }
+
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('admin')
   @Delete(':id')

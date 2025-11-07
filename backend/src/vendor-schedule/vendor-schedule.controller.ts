@@ -25,12 +25,14 @@ export class VendorScheduleController {
   findOne(@Param('id') id: string) {
     return this.vendorScheduleService.findOne(+id);
   }
+  
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('vendor', 'admin')
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateVendorScheduleDto: UpdateVendorScheduleDto) {
     return this.vendorScheduleService.update(+id, updateVendorScheduleDto);
   }
+
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('vendor', 'admin')
   @Delete(':id')

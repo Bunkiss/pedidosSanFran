@@ -10,7 +10,6 @@ import { Roles } from '../auth/roles.decorator';
 export class VendorsController {
   constructor(private readonly vendorsService: VendorsService) {}
 
-  // 🟢 Público: accesible sin autenticación
   @Get('public')
   findAllPublic() {
     return this.vendorsService.findAllPublic();

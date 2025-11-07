@@ -23,5 +23,5 @@ export class CreateVehicleDto {
 
   @IsOptional()
   @IsNumber()
-  driverId?: number; // lo dejamos opcional porque el driverId vendrá desde la URL en rutas anidadas
+  driverId?: number; 
 }

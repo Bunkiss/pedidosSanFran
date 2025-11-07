@@ -52,7 +52,6 @@ export class ProductService {
     return producto;
   }
 
-
   async update(id: number, updateProductDto: UpdateProductDto): Promise<Product> {
     const producto = await this.findOne(id);
 
@@ -69,7 +68,6 @@ export class ProductService {
 
       producto.vendor = nuevoVendor;
     }
-
  
     Object.assign(producto, updateProductDto);
 
@@ -82,17 +80,16 @@ export class ProductService {
   }
 
   async findByVendor(vendorId: number): Promise<Product[]> {
-  const vendor = await this.vendorRepository.findOne({ where: { id: vendorId } });
+    const vendor = await this.vendorRepository.findOne({ where: { id: vendorId } });
 
-  if (!vendor) {
-    throw new NotFoundException(`Vendor con ID ${vendorId} no encontrado`);
+    if (!vendor) {
+      throw new NotFoundException(`Vendor con ID ${vendorId} no encontrado`);
+    }
+
+    return this.productRepository.find({
+      where: { vendor: { id: vendorId } },
+      relations: ['vendor'],
+      order: { id: 'ASC' },
+    });
   }
-
-  return this.productRepository.find({
-    where: { vendor: { id: vendorId } },
-    relations: ['vendor'],
-    order: { id: 'ASC' },
-  });
-  }
-
 }
