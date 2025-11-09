@@ -17,3 +17,12 @@ export const createMockRepository = (): MockRepository => ({
   save: jest.fn(),
   remove: jest.fn(),
 });
+
+export const jwtServiceMock = {
+  signAsync: jest.fn().mockResolvedValue('fake-jwt-token'),
+};
+
+export const bcryptMock = {
+  hash: jest.fn().mockResolvedValue('hashed-password'),
+  compare: jest.fn().mockResolvedValue(true),
+};

@@ -1,13 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { NotFoundException } from '@nestjs/common';
 import { VendorsService } from './vendors.service';
 import { Vendor } from './entities/vendor.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { createMockRepository, MockRepository } from '../../test/utils/test-mocks';
-import { NotFoundException } from '@nestjs/common';
 
 describe('VendorsService', () => {
   let service: VendorsService;
-  let repo: MockRepository<Vendor>;
+  let vendorRepo: MockRepository;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -21,86 +21,108 @@ describe('VendorsService', () => {
     }).compile();
 
     service = module.get<VendorsService>(VendorsService);
-    repo = module.get(getRepositoryToken(Vendor));
+    vendorRepo = module.get<MockRepository>(getRepositoryToken(Vendor));
   });
 
   it('debería estar definido', () => {
     expect(service).toBeDefined();
+    expect(vendorRepo).toBeDefined();
   });
 
-	describe('create', () => {
-	it('debería crear un vendor correctamente', async () => {
-			const dto = { nombre: 'Bar de Tony', categoria: 'Restaurante', userId: 1 };
-			const vendor = { id: 1, ...dto } as unknown as Vendor;
+  describe('create', () => {
+    it('debería crear y guardar un vendor', async () => {
+      const dto = { name: 'Vendor 1' };
+      const vendorEntity = { id: 1, ...dto };
 
-			repo.create.mockReturnValue(vendor);
-			repo.save.mockResolvedValue(vendor);
+      vendorRepo.create.mockReturnValue(vendorEntity);
+      vendorRepo.save.mockResolvedValue(vendorEntity);
 
-			const result = await service.create(dto);
-			expect(repo.create).toHaveBeenCalledWith(dto);
-			expect(repo.save).toHaveBeenCalledWith(vendor);
-			expect(result).toEqual(vendor);
-	});
-	});
+      const result = await service.create(dto as any);
+
+      expect(vendorRepo.create).toHaveBeenCalledWith(dto);
+      expect(vendorRepo.save).toHaveBeenCalledWith(vendorEntity);
+      expect(result).toEqual(vendorEntity);
+    });
+  });
 
   describe('findAll', () => {
-    it('debería devolver todos los vendors', async () => {
-      const vendors = [{ id: 1, nombre: 'Kiosco Mario' }] as Vendor[];
-      repo.find.mockResolvedValue(vendors);
+    it('debería devolver todos los vendors con relaciones', async () => {
+      const vendors = [{ id: 1 }, { id: 2 }];
+      vendorRepo.find.mockResolvedValue(vendors);
 
       const result = await service.findAll();
-      expect(repo.find).toHaveBeenCalledWith({
-        relations: ['schedules'],
-        order: { id: 'ASC' },
+
+      expect(vendorRepo.find).toHaveBeenCalledWith({
+        relations: ['products', 'user'],
       });
       expect(result).toEqual(vendors);
     });
   });
 
   describe('findOne', () => {
-    it('debería devolver un vendor por id', async () => {
-      const vendor = { id: 1, nombre: 'Lomitos SRL' } as Vendor;
-      repo.findOne.mockResolvedValue(vendor);
+    it('debería devolver un vendor si existe', async () => {
+      const vendor = { id: 1, name: 'Vendor 1' };
+      vendorRepo.findOne.mockResolvedValue(vendor);
 
       const result = await service.findOne(1);
-      expect(repo.findOne).toHaveBeenCalledWith({
+
+      expect(vendorRepo.findOne).toHaveBeenCalledWith({
         where: { id: 1 },
-        relations: ['schedules'],
+        relations: ['products', 'user'],
       });
       expect(result).toEqual(vendor);
     });
 
-    it('debería lanzar NotFoundException si no existe', async () => {
-      repo.findOne.mockResolvedValue(null);
-      await expect(service.findOne(99)).rejects.toThrow(NotFoundException);
+    it('debería lanzar NotFoundException si el vendor no existe', async () => {
+      vendorRepo.findOne.mockResolvedValue(null);
+
+      await expect(service.findOne(999)).rejects.toThrow(NotFoundException);
     });
   });
 
   describe('update', () => {
     it('debería actualizar un vendor existente', async () => {
-      const vendor = { id: 1, nombre: 'Old', categoria: 'Comida' } as Vendor;
-      const dto = { nombre: 'Nuevo' };
+      const vendor = { id: 1, name: 'Vendor 1' };
+      const dto = { name: 'Nuevo Nombre' };
+      const updated = { ...vendor, ...dto };
 
-      jest.spyOn(service, 'findOne').mockResolvedValue(vendor);
-      repo.save.mockResolvedValue({ ...vendor, ...dto });
+      jest.spyOn(service, 'findOne').mockResolvedValue(vendor as any);
+      vendorRepo.save.mockResolvedValue(updated);
 
-      const result = await service.update(1, dto);
+      const result = await service.update(1, dto as any);
+
       expect(service.findOne).toHaveBeenCalledWith(1);
-      expect(repo.save).toHaveBeenCalledWith({ ...vendor, ...dto });
-      expect(result.nombre).toBe('Nuevo');
+      expect(vendorRepo.save).toHaveBeenCalledWith(updated);
+      expect(result).toEqual(updated);
     });
   });
 
   describe('remove', () => {
-    it('debería eliminar un vendor', async () => {
-      const vendor = { id: 1, nombre: 'Para Borrar' } as Vendor;
+    it('debería eliminar un vendor existente', async () => {
+      const vendor = { id: 1, name: 'Vendor 1' };
 
-      jest.spyOn(service, 'findOne').mockResolvedValue(vendor);
-      repo.remove.mockResolvedValue(vendor);
+      jest.spyOn(service, 'findOne').mockResolvedValue(vendor as any);
+      vendorRepo.remove.mockResolvedValue(vendor);
 
-      await service.remove(1);
+      const result = await service.remove(1);
+
       expect(service.findOne).toHaveBeenCalledWith(1);
-      expect(repo.remove).toHaveBeenCalledWith(vendor);
+      expect(vendorRepo.remove).toHaveBeenCalledWith(vendor);
+      expect(result).toEqual(vendor);
+    });
+  });
+
+  describe('findAllPublic', () => {
+    it('debería devolver todos los vendors públicos con productos', async () => {
+      const vendors = [{ id: 1 }, { id: 2 }];
+      vendorRepo.find.mockResolvedValue(vendors);
+
+      const result = await service.findAllPublic();
+
+      expect(vendorRepo.find).toHaveBeenCalledWith({
+        relations: ['products'],
+      });
+      expect(result).toEqual(vendors);
     });
   });
 });
