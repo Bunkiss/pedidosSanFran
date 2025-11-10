@@ -54,5 +54,15 @@ export class DriverController {
   remove(@Param('id') id: number) {
     return this.driverService.remove(id);
   }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+@Roles('driver')
+@Post(':driverId/complete/:orderId')
+completeOrder(
+  @Param('driverId') driverId: number,
+  @Param('orderId') orderId: number,
+) {
+  return this.driverService.completeOrder(driverId, orderId);
+}
 }
 

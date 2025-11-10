@@ -51,7 +51,7 @@ export class OrderController {
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('vendor', 'admin')
+  @Roles('vendor', 'admin','driver')
   @Patch(':id/status')
   async updateStatus(
     @Param('id') id: number,

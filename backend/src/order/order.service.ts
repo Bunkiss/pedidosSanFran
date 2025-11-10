@@ -24,6 +24,7 @@ export class OrderService {
     private readonly driverRepo: Repository<Driver>,
   ) {}
 
+  // 🔹 Crear pedido nuevo (siempre comienza como pendiente)
   async create(dto: CreateOrderDto) {
     const vendor = await this.vendorRepo.findOne({ where: { id: dto.vendorId } });
     const client = await this.userRepo.findOne({ where: { id: dto.clientId } });
@@ -35,7 +36,7 @@ export class OrderService {
       ...dto,
       vendor,
       client,
-      estado: 'pendiente',
+      estado: 'pendiente', // 🔒 se fuerza
     });
 
     return await this.orderRepo.save(order);
@@ -58,9 +59,10 @@ export class OrderService {
     return order;
   }
 
+  // 🔹 Pedidos disponibles para los repartidores (listos para aceptar)
   async findAvailable() {
     return this.orderRepo.find({
-      where: { estado: 'pendiente', driver: IsNull() },
+      where: { estado: 'confirmado', driver: IsNull() }, // ✅ estado correcto
       relations: ['vendor', 'client', 'details', 'details.product'],
       order: { createdAt: 'DESC' },
     });
@@ -99,32 +101,38 @@ export class OrderService {
     return this.orderRepo.save(order);
   }
 
+  // 🔹 Actualizar estado
   async updateStatus(id: number, estado: string) {
     const order = await this.orderRepo.findOne({ where: { id } });
     if (!order) throw new NotFoundException('Pedido no encontrado');
 
     order.estado = estado as
-    | 'pendiente'
-    | 'confirmado'
-    | 'en_camino'
-    | 'entregado'
-    | 'cancelado'
-    | 'completado';
+      | 'pendiente'
+      | 'confirmado'
+      | 'en_camino'
+      | 'entregado'
+      | 'cancelado'
+      | 'completado';
+
+    await this.orderRepo.save(order); // ✅ faltaba esto
+    return { message: `Estado actualizado a ${estado}`, order };
+  }
+
+  // 🔹 No marcar completado al pagar, solo confirmar
+  async payOrder(orderId: number, dto: any) {
+    const order = await this.findOne(orderId);
+    if (!order) throw new NotFoundException('Pedido no encontrado');
+
+    // Si el pago es exitoso, el pedido se confirma, no se completa
+    order.estado = 'confirmado';
+    await this.orderRepo.save(order);
+
+    return { message: 'Pago registrado correctamente. Pedido confirmado ✅', order };
   }
 
   async remove(id: number) {
     const order = await this.findOne(id);
     await this.orderRepo.remove(order);
     return { message: 'Pedido eliminado correctamente' };
-  }
-
-  async payOrder(orderId: number, dto: any) {
-    const order = await this.findOne(orderId);
-    if (!order) throw new NotFoundException('Pedido no encontrado');
-
-    order.estado = 'completado';
-    await this.orderRepo.save(order);
-
-    return { message: 'Pago registrado correctamente', order };
   }
 }
