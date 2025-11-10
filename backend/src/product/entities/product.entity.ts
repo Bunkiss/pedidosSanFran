@@ -16,7 +16,7 @@ export class Product {
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   precio: number;
 
-  @Column({ nullable: true })
+  @Column({ type: 'longtext', nullable: true })
   imagen: string;
 
   @Column({ type: 'tinyint', default: 1 })

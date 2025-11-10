@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, MaxLength, IsOptional, IsDecimal, IsNumber } from 'class-validator';
+import { IsString, IsNotEmpty, MaxLength, IsOptional, IsNumber } from 'class-validator';
 
 export class CreateProductDto {
   @IsString()
@@ -11,7 +11,7 @@ export class CreateProductDto {
   descripcion?: string;
 
   @IsNotEmpty({ message: 'El precio del producto es obligatorio' })
-  @IsDecimal({}, { message: 'El precio debe tener formato decimal válido' })
+  @IsNumber({}, { message: 'El precio debe ser un número válido' })
   precio: number;
 
   @IsOptional()

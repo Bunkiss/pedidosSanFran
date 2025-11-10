@@ -18,7 +18,7 @@ import { AuthModule } from './auth/auth.module';
   imports: [
     ConfigModule.forRoot({
 
-      envFilePath: `.env.${process.env.NODE_ENV}`,
+      envFilePath: '.env',
 
       isGlobal: true,
     }),
@@ -32,7 +32,7 @@ import { AuthModule } from './auth/auth.module';
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_NAME'),
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
-        synchronize: process.env.NODE_ENV === 'test',
+        synchronize: configService.get<string>('DB_SYNC') === 'true',
       }),
       inject: [ConfigService],
     }),
