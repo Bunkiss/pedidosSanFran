@@ -17,9 +17,7 @@ import { AuthModule } from './auth/auth.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
-
-      envFilePath: '.env',
-
+      envFilePath: `.env.${process.env.NODE_ENV}`,
       isGlobal: true,
     }),
     TypeOrmModule.forRootAsync({
@@ -32,7 +30,7 @@ import { AuthModule } from './auth/auth.module';
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_NAME'),
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
-        synchronize: configService.get<string>('DB_SYNC') === 'true',
+        synchronize: process.env.NODE_ENV === 'test',
       }),
       inject: [ConfigService],
     }),
