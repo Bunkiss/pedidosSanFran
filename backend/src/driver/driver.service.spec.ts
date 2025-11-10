@@ -30,9 +30,7 @@ describe('DriverService', () => {
     orderRepo = module.get(getRepositoryToken(Order));
   });
 
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
+  afterEach(() => jest.clearAllMocks());
 
   describe('create', () => {
     it('debe crear un driver asociado a un usuario existente', async () => {
@@ -103,14 +101,14 @@ describe('DriverService', () => {
   });
 
   describe('findAvailableOrders', () => {
-    it('debe retornar pedidos pendientes sin driver', async () => {
+    it('debe retornar pedidos confirmados sin driver', async () => {
       const orders = [{ id: 1 }, { id: 2 }];
       orderRepo.find.mockResolvedValue(orders);
 
       const result = await service.findAvailableOrders();
 
       expect(orderRepo.find).toHaveBeenCalledWith({
-        where: { estado: 'pendiente', driver: IsNull() },
+        where: { estado: 'confirmado', driver: IsNull() },
         relations: ['vendor', 'client', 'details', 'details.product'],
         order: { createdAt: 'DESC' },
       });
@@ -119,9 +117,9 @@ describe('DriverService', () => {
   });
 
   describe('acceptOrder', () => {
-    it('debe asignar un pedido pendiente a un driver', async () => {
+    it('debe asignar un pedido confirmado a un driver', async () => {
       const driver = { id: 1 };
-      const order = { id: 5, estado: 'pendiente', driver: null };
+      const order = { id: 5, estado: 'confirmado', driver: null };
 
       driverRepo.findOne.mockResolvedValue(driver);
       orderRepo.findOne.mockResolvedValue(order);
@@ -132,7 +130,10 @@ describe('DriverService', () => {
       expect(driverRepo.findOne).toHaveBeenCalledWith({ where: { id: 1 } });
       expect(orderRepo.findOne).toHaveBeenCalledWith({ where: { id: 5 }, relations: ['driver'] });
       expect(orderRepo.save).toHaveBeenCalledWith({ ...order, driver, estado: 'en_camino' });
-      expect(result.estado).toBe('en_camino');
+      expect(result).toEqual({
+        message: `Pedido #5 aceptado por el driver #1`,
+        order: { ...order, driver, estado: 'en_camino' },
+      });
     });
 
     it('debe lanzar NotFoundException si el driver no existe', async () => {
@@ -149,7 +150,7 @@ describe('DriverService', () => {
 
     it('debe lanzar BadRequest si el pedido ya fue asignado', async () => {
       const driver = { id: 1 };
-      const order = { id: 5, estado: 'pendiente', driver: { id: 7 } };
+      const order = { id: 5, estado: 'confirmado', driver: { id: 7 } };
 
       driverRepo.findOne.mockResolvedValue(driver);
       orderRepo.findOne.mockResolvedValue(order);
@@ -157,9 +158,9 @@ describe('DriverService', () => {
       await expect(service.acceptOrder(1, 5)).rejects.toThrow(BadRequestException);
     });
 
-    it('debe lanzar BadRequest si el pedido no está pendiente', async () => {
+    it('debe lanzar BadRequest si el pedido no está confirmado', async () => {
       const driver = { id: 1 };
-      const order = { id: 5, estado: 'completado', driver: null };
+      const order = { id: 5, estado: 'pendiente', driver: null };
 
       driverRepo.findOne.mockResolvedValue(driver);
       orderRepo.findOne.mockResolvedValue(order);
@@ -189,6 +190,37 @@ describe('DriverService', () => {
     it('debe lanzar NotFoundException si el driver no existe', async () => {
       driverRepo.findOne.mockResolvedValue(null);
       await expect(service.findOrdersByDriver(99)).rejects.toThrow(NotFoundException);
+    });
+  });
+
+  describe('completeOrder', () => {
+    it('debe completar un pedido en_camino asignado al driver', async () => {
+      const order = { id: 7, estado: 'en_camino', driver: { id: 1 } };
+      orderRepo.findOne.mockResolvedValue(order);
+      orderRepo.save.mockResolvedValue({ ...order, estado: 'completado' });
+
+      const result = await service.completeOrder(1, 7);
+
+      expect(orderRepo.findOne).toHaveBeenCalledWith({
+        where: { id: 7, driver: { id: 1 } },
+      });
+      expect(orderRepo.save).toHaveBeenCalledWith({ ...order, estado: 'completado' });
+      expect(result).toEqual({
+        message: `Pedido #7 entregado con éxito ✅`,
+        order: { ...order, estado: 'completado' },
+      });
+    });
+
+    it('debe lanzar NotFoundException si el pedido no existe o no pertenece al driver', async () => {
+      orderRepo.findOne.mockResolvedValue(null);
+      await expect(service.completeOrder(1, 999)).rejects.toThrow(NotFoundException);
+    });
+
+    it('debe lanzar BadRequest si el pedido no está en_camino', async () => {
+      const order = { id: 8, estado: 'confirmado', driver: { id: 1 } };
+      orderRepo.findOne.mockResolvedValue(order);
+
+      await expect(service.completeOrder(1, 8)).rejects.toThrow(BadRequestException);
     });
   });
 });

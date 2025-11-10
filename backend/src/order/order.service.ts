@@ -24,7 +24,6 @@ export class OrderService {
     private readonly driverRepo: Repository<Driver>,
   ) {}
 
-  // 🔹 Crear pedido nuevo (siempre comienza como pendiente)
   async create(dto: CreateOrderDto) {
     const vendor = await this.vendorRepo.findOne({ where: { id: dto.vendorId } });
     const client = await this.userRepo.findOne({ where: { id: dto.clientId } });
@@ -36,7 +35,7 @@ export class OrderService {
       ...dto,
       vendor,
       client,
-      estado: 'pendiente', // 🔒 se fuerza
+      estado: 'pendiente', 
     });
 
     return await this.orderRepo.save(order);
@@ -59,10 +58,9 @@ export class OrderService {
     return order;
   }
 
-  // 🔹 Pedidos disponibles para los repartidores (listos para aceptar)
   async findAvailable() {
     return this.orderRepo.find({
-      where: { estado: 'confirmado', driver: IsNull() }, // ✅ estado correcto
+      where: { estado: 'confirmado', driver: IsNull() }, 
       relations: ['vendor', 'client', 'details', 'details.product'],
       order: { createdAt: 'DESC' },
     });
@@ -114,16 +112,14 @@ export class OrderService {
       | 'cancelado'
       | 'completado';
 
-    await this.orderRepo.save(order); // ✅ faltaba esto
+    await this.orderRepo.save(order); 
     return { message: `Estado actualizado a ${estado}`, order };
   }
 
-  // 🔹 No marcar completado al pagar, solo confirmar
   async payOrder(orderId: number, dto: any) {
     const order = await this.findOne(orderId);
     if (!order) throw new NotFoundException('Pedido no encontrado');
 
-    // Si el pago es exitoso, el pedido se confirma, no se completa
     order.estado = 'confirmado';
     await this.orderRepo.save(order);
 

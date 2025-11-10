@@ -67,7 +67,6 @@ export class DriverService {
     throw new BadRequestException('Este pedido ya fue asignado a otro conductor');
   }
 
-  // ✅ ahora el driver puede aceptar pedidos confirmados
   if (order.estado !== 'confirmado') {
     throw new BadRequestException(`El pedido no puede ser aceptado porque su estado actual es ${order.estado}`);
   }

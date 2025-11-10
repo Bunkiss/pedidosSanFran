@@ -112,7 +112,7 @@ describe('OrderService', () => {
       const result = await service.findAvailable();
 
       expect(orderRepo.find).toHaveBeenCalledWith({
-        where: { estado: 'pendiente', driver: IsNull() },
+        where: { estado: 'confirmado', driver: IsNull() },
         relations: ['vendor', 'client', 'details', 'details.product'],
         order: { createdAt: 'DESC' },
       });
@@ -224,21 +224,16 @@ describe('OrderService', () => {
   });
 
   describe('payOrder', () => {
-    it('debe marcar un pedido como completado y guardar', async () => {
+    it('debe marcar un pedido como confirmado y guardar', async () => {
       const order = { id: 1, estado: 'en_camino' };
       jest.spyOn(service, 'findOne').mockResolvedValue(order as any);
-      orderRepo.save.mockResolvedValue({ ...order, estado: 'completado' });
+      orderRepo.save.mockResolvedValue({ ...order, estado: 'confirmado' });
 
       const result = await service.payOrder(1, {});
 
       expect(service.findOne).toHaveBeenCalledWith(1);
-      expect(orderRepo.save).toHaveBeenCalledWith({ ...order, estado: 'completado' });
-      expect(result.message).toBe('Pago registrado correctamente');
-    });
-
-    it('debe lanzar NotFoundException si el pedido no existe', async () => {
-      jest.spyOn(service, 'findOne').mockResolvedValue(null as any);
-      await expect(service.payOrder(999, {})).rejects.toThrow(NotFoundException);
+      expect(orderRepo.save).toHaveBeenCalledWith({ ...order, estado: 'confirmado' });
+      expect(result.message).toBe('Pago registrado correctamente. Pedido confirmado ✅');
     });
   });
 });

@@ -105,12 +105,14 @@ describe('AuthService', () => {
       driver: null,
     };
 
+    const dto = { email: mockUser.email, contraseña: '123456' };
+
     it('debería lanzar error si el usuario no existe', async () => {
       userRepo.findOne.mockResolvedValue(null);
 
-      await expect(service.login('noexiste@test.com', '123456')).rejects.toThrow(BadRequestException);
+      await expect(service.login(dto)).rejects.toThrow(BadRequestException);
       expect(userRepo.findOne).toHaveBeenCalledWith({
-        where: { email: 'noexiste@test.com' },
+        where: { email: dto.email },
         relations: ['vendor', 'driver'],
       });
     });
@@ -119,22 +121,31 @@ describe('AuthService', () => {
       userRepo.findOne.mockResolvedValue(mockUser);
       bcryptMock.compare.mockResolvedValue(false);
 
-      await expect(service.login(mockUser.email, 'wrong')).rejects.toThrow(BadRequestException);
-      expect(bcryptMock.compare).toHaveBeenCalled();
+      await expect(service.login(dto)).rejects.toThrow(BadRequestException);
+      expect(bcryptMock.compare).toHaveBeenCalledWith(dto.contraseña, mockUser.contraseña);
     });
 
     it('debería crear vendor si el usuario es vendor sin vendor asignado', async () => {
       userRepo.findOne
-        .mockResolvedValueOnce(mockUser)
-        .mockResolvedValueOnce({ ...mockUser, vendor: { id: 20 } });
+        .mockResolvedValueOnce(mockUser) // primera búsqueda
+        .mockResolvedValueOnce({ ...mockUser, vendor: { id: 20 } }); // después de crear vendor
 
       bcryptMock.compare.mockResolvedValue(true);
-      vendorRepo.create.mockReturnValue({ id: 20, user: mockUser });
+      vendorRepo.create.mockReturnValue({
+        id: 20,
+        user: mockUser,
+        nombre: mockUser.nombre,
+        categoria: 'general',
+      });
       vendorRepo.save.mockResolvedValue({ id: 20, user: mockUser });
 
-      const result = await service.login(mockUser.email, '123456');
+      const result = await service.login(dto);
 
-      expect(vendorRepo.create).toHaveBeenCalled();
+      expect(vendorRepo.create).toHaveBeenCalledWith({
+        user: mockUser,
+        nombre: mockUser.nombre,
+        categoria: 'general',
+      });
       expect(vendorRepo.save).toHaveBeenCalled();
       expect(result.success).toBe(true);
       expect(result.token).toBe('fake-jwt-token');
@@ -148,6 +159,8 @@ describe('AuthService', () => {
 
     it('debería crear driver si el usuario es driver sin driver asignado', async () => {
       const driverUser = { ...mockUser, rol: 'driver', driver: null };
+      const dtoDriver = { email: driverUser.email, contraseña: '123456' };
+
       userRepo.findOne
         .mockResolvedValueOnce(driverUser)
         .mockResolvedValueOnce({ ...driverUser, driver: { id: 30 } });
@@ -156,9 +169,9 @@ describe('AuthService', () => {
       driverRepo.create.mockReturnValue({ id: 30, user: driverUser });
       driverRepo.save.mockResolvedValue({ id: 30, user: driverUser });
 
-      const result = await service.login(driverUser.email, '123456');
+      const result = await service.login(dtoDriver);
 
-      expect(driverRepo.create).toHaveBeenCalled();
+      expect(driverRepo.create).toHaveBeenCalledWith({ user: driverUser });
       expect(driverRepo.save).toHaveBeenCalled();
       expect(result.user.driverId).toBe(30);
     });
