@@ -1,4 +1,5 @@
 import { IsEmail, IsString, MinLength } from 'class-validator';
+import { Expose } from 'class-transformer';
 
 export class CreateAuthDto {
   @IsString()
@@ -9,6 +10,7 @@ export class CreateAuthDto {
 
   @IsString()
   @MinLength(6)
+  @Expose({ name: 'contraseña' })
   contraseña: string;
 
   @IsString()

@@ -7,6 +7,7 @@ import { User } from '../user/entities/user.entity';
 import { Driver } from '../driver/entities/driver.entity';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { Vendor } from '../vendor/entities/vendor.entity';
+import { LoginDto } from './dto/login.dto';
 
 @Injectable()
 export class AuthService {
@@ -57,15 +58,15 @@ export class AuthService {
     };
   }
 
-  async login(email: string, contraseña: string) {
+  async login(dto: LoginDto) {
     let user = await this.userRepo.findOne({
-      where: { email },
+      where: { email: dto.email },
       relations: ['vendor', 'driver'],
     });
 
     if (!user) throw new BadRequestException('Usuario no encontrado');
 
-    const isMatch = await bcrypt.compare(contraseña, user.contraseña);
+    const isMatch = await bcrypt.compare(dto.contraseña, user.contraseña);
     if (!isMatch) throw new BadRequestException('Contraseña incorrecta');
 
     if (user.rol === 'vendor' && !user.vendor) {
