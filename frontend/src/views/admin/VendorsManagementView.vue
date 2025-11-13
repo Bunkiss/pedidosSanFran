@@ -4,7 +4,6 @@
       <h1 class="text-3xl font-bold text-gray-900">Gestión de Vendors</h1>
     </div>
 
-    <!-- Stats -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
       <div class="bg-white rounded-xl p-6 border border-gray-200">
         <div class="flex items-center justify-between">
@@ -49,7 +48,6 @@
       </div>
     </div>
 
-    <!-- Vendors List -->
     <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
       <div class="p-6 border-b border-gray-200">
         <input
@@ -176,7 +174,6 @@ const toggleVendorStatus = async (vendor) => {
 }
 
 const viewVendorDetails = (vendor) => {
-  // Navigate to vendor details or open modal
   console.log('View vendor details:', vendor)
 }
 

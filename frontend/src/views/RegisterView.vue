@@ -1,4 +1,3 @@
-<!-- biome-ignore lint/correctness/useHookAtTopLevel: Vue 3 Composition API file -->
 <template>
   <div class="container-fluid min-vh-100 d-flex align-items-center justify-content-center bg-light py-4">
     <div class="w-100" style="max-width: 500px;">
@@ -115,7 +114,6 @@ import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { useValidation, registerSchema } from '@/composables/useValidation'
 
-// ✅ Extraemos campos individuales con useField
 const { handleSubmit, errors, useField } = useValidation(registerSchema)
 const { value: nombre } = useField('nombre')
 const { value: email } = useField('email')

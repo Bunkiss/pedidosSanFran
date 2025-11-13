@@ -2,7 +2,6 @@
   <div class="container-fluid py-4">
     <h2 class="mb-4">Mis Entregas</h2>
 
-    <!-- Filters -->
     <div class="card mb-4">
       <div class="card-body">
         <div class="row g-3">
@@ -24,14 +23,12 @@
       </div>
     </div>
 
-    <!-- Loading -->
     <div v-if="loading" class="text-center py-5">
       <div class="spinner-border text-primary" role="status">
         <span class="visually-hidden">Cargando...</span>
       </div>
     </div>
 
-    <!-- Orders List -->
     <div v-else-if="filteredOrders.length > 0">
       <div class="card mb-3" v-for="order in filteredOrders" :key="order.id">
         <div class="card-body">
@@ -75,7 +72,6 @@
       </div>
     </div>
 
-    <!-- Empty State -->
     <div v-else class="text-center py-5">
       <i class="bi bi-inbox fs-1 text-muted mb-3"></i>
       <h4 class="text-muted">No hay entregas</h4>

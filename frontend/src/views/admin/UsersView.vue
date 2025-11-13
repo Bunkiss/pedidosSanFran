@@ -13,7 +13,6 @@
       </button>
     </div>
 
-    <!-- Filters -->
     <div class="bg-white rounded-xl p-6 border border-gray-200 mb-6">
       <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
         <input
@@ -49,7 +48,6 @@
       </div>
     </div>
 
-    <!-- Users Table -->
     <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
       <table class="w-full">
         <thead class="bg-gray-50 border-b border-gray-200">
@@ -105,7 +103,6 @@
       </table>
     </div>
 
-    <!-- User Modal -->
     <div v-if="showModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div class="bg-white rounded-xl p-8 max-w-md w-full mx-4">
         <h2 class="text-2xl font-bold text-gray-900 mb-6">

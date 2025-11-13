@@ -1,11 +1,9 @@
 <template>
   <div class="container py-4">
-    <!-- Header -->
     <div class="row mb-4">
       <div class="col-12">
         <h2 class="mb-3">Todos los Restaurantes</h2>
         
-        <!-- Filters -->
         <div class="row g-3 mb-4">
           <div class="col-md-4">
             <input 
@@ -41,14 +39,12 @@
       </div>
     </div>
 
-    <!-- Loading -->
     <div v-if="loading" class="text-center py-5">
       <div class="spinner-border text-primary" role="status">
         <span class="visually-hidden">Cargando...</span>
       </div>
     </div>
 
-    <!-- Vendors List -->
     <div v-else-if="filteredVendors.length > 0" class="row g-4">
       <div 
         v-for="vendor in filteredVendors" 
@@ -82,7 +78,6 @@
       </div>
     </div>
 
-    <!-- Empty State -->
     <div v-else class="text-center py-5">
       <i class="bi bi-search fs-1 text-muted mb-3"></i>
       <p class="text-muted">No se encontraron restaurantes con estos filtros</p>
@@ -110,7 +105,6 @@ const filters = ref({
 const filteredVendors = computed(() => {
   let result = [...vendors.value]
 
-  // Filter by search
   if (filters.value.search) {
     result = result.filter(v => 
       v.nombre.toLowerCase().includes(filters.value.search.toLowerCase()) ||
@@ -118,12 +112,10 @@ const filteredVendors = computed(() => {
     )
   }
 
-  // Filter by category
   if (filters.value.category) {
     result = result.filter(v => v.categoria === filters.value.category)
   }
 
-  // Sort
   if (filters.value.sort === 'rating') {
     result.sort((a, b) => (b.calificacion || 0) - (a.calificacion || 0))
   } else if (filters.value.sort === 'delivery') {
@@ -146,7 +138,6 @@ const fetchVendors = async () => {
 }
 
 const applyFilters = () => {
-  // Update URL query params
   router.push({ query: { ...filters.value } })
 }
 

@@ -7,14 +7,12 @@
       </button>
     </div>
 
-    <!-- Loading -->
     <div v-if="loading" class="text-center py-5">
       <div class="spinner-border text-primary" role="status">
         <span class="visually-hidden">Cargando...</span>
       </div>
     </div>
 
-    <!-- Products Table -->
     <div v-else-if="products.length > 0" class="card">
       <div class="card-body">
         <div class="table-responsive">
@@ -70,7 +68,6 @@
       </div>
     </div>
 
-    <!-- Empty State -->
     <div v-else class="text-center py-5">
       <i class="bi bi-box-seam fs-1 text-muted mb-3"></i>
       <h4 class="text-muted">No tienes productos</h4>
@@ -80,7 +77,6 @@
       </button>
     </div>
 
-    <!-- Product Modal -->
     <div class="modal fade" id="productModal" tabindex="-1">
       <div class="modal-dialog">
         <div class="modal-content">
@@ -240,13 +236,12 @@ const saveProduct = async () => {
   try {
     console.log("🧩 authStore.user:", authStore.user);
 
-    // 🔄 Mapeo disponible ↔ estado
     const data = {
       ...productForm.value,
       estado: productForm.value.disponible ? 1 : 0,
       vendorId: authStore.user.vendorId || 6
     };
-    delete data.disponible; // quitar campo extra
+    delete data.disponible;
 
     if (editingProduct.value) {
       await productAPI.update(editingProduct.value.id, data);

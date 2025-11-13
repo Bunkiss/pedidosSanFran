@@ -67,7 +67,6 @@
       </div>
     </div>
 
-    <!-- Vehicle Modal -->
     <div 
       v-if="showModal" 
       class="modal fade show d-block" 
@@ -167,7 +166,6 @@ const vehicleForm = ref({
   patente: ''
 })
 
-/* ---------------- FETCH VEHICLES ---------------- */
 const fetchVehicles = async () => {
   if (!authStore.user?.id) {
     console.warn('⚠️ Usuario aún no disponible, se espera authStore.user...')
@@ -200,7 +198,6 @@ const fetchVehicles = async () => {
   }
 }
 
-/* ---------------- SAVE VEHICLE ---------------- */
 const saveVehicle = async () => {
   if (!driverId.value) {
     alert('No se pudo determinar el driverId. Asegúrate de tener un perfil de conductor.')
@@ -227,7 +224,6 @@ const saveVehicle = async () => {
   }
 }
 
-/* ---------------- CRUD AUX ---------------- */
 const openCreateModal = () => {
   editingVehicle.value = null
   vehicleForm.value = {
@@ -267,7 +263,6 @@ const deleteVehicle = async (vehicleId) => {
   }
 }
 
-/* ---------------- HELPERS ---------------- */
 const getVehicleIcon = (tipo) => {
   const icons = {
     moto: '🏍️',
@@ -286,9 +281,7 @@ const getVehicleTypeLabel = (tipo) => {
   return labels[tipo] || tipo
 }
 
-/* ---------------- MOUNT ---------------- */
 onMounted(() => {
-  // Espera a que el usuario esté inicializado
   if (!authStore.user) {
     console.warn('⏳ Esperando a que se cargue el usuario...')
     const unwatch = watch(
@@ -437,7 +430,6 @@ onMounted(() => {
   background-color: rgba(255, 71, 87, 0.1);
 }
 
-/* Modal Styles */
 .modal-overlay {
   position: fixed;
   top: 0;

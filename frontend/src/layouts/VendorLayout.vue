@@ -1,6 +1,5 @@
 <template>
   <div class="d-flex min-vh-100">
-    <!-- Created vendor sidebar with Bootstrap -->
     <aside class="bg-dark text-white" style="width: 250px;">
       <div class="p-4">
         <h4 class="mb-4">Panel Vendor</h4>

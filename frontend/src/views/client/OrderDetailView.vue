@@ -1,6 +1,5 @@
 <template>
   <div class="container py-4">
-    <!-- Loading -->
     <div v-if="loading" class="text-center py-5">
       <div class="spinner-border text-primary" role="status">
         <span class="visually-hidden">Cargando...</span>
@@ -8,7 +7,6 @@
     </div>
 
     <div v-else-if="order">
-      <!-- Header -->
       <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
           <h2>Pedido #{{ order.id }}</h2>
@@ -28,9 +26,7 @@
       </div>
 
       <div class="row">
-        <!-- Order Details -->
         <div class="col-lg-8">
-          <!-- Order Status Timeline -->
           <div class="card mb-4">
             <div class="card-body">
               <h5 class="card-title mb-4">Estado del Pedido</h5>
@@ -99,7 +95,6 @@
             </div>
           </div>
 
-          <!-- Order Items -->
           <div class="card mb-4">
             <div class="card-body">
               <h5 class="card-title mb-3">Productos</h5>
@@ -125,7 +120,6 @@
             </div>
           </div>
 
-          <!-- Delivery Info -->
           <div class="card mb-4">
             <div class="card-body">
               <h5 class="card-title mb-3">Información de Entrega</h5>
@@ -145,7 +139,6 @@
           </div>
         </div>
 
-        <!-- Order Summary -->
         <div class="col-lg-4">
           <div class="card sticky-top" style="top: 20px;">
             <div class="card-body">

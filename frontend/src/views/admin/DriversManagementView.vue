@@ -4,7 +4,6 @@
       <h1 class="text-3xl font-bold text-gray-900">Gestión de Drivers</h1>
     </div>
 
-    <!-- Stats -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
       <div class="bg-white rounded-xl p-6 border border-gray-200">
         <div class="flex items-center justify-between">
@@ -63,7 +62,6 @@
       </div>
     </div>
 
-    <!-- Drivers List -->
     <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
       <div class="p-6 border-b border-gray-200">
         <div class="flex gap-4">

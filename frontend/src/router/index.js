@@ -1,17 +1,14 @@
 import { createRouter, createWebHistory } from "vue-router"
 import { useAuthStore } from "@/stores/auth"
 
-// Layouts
 import ClientLayout from "@/layouts/ClientLayout.vue"
 import VendorLayout from "@/layouts/VendorLayout.vue"
 import DriverLayout from "@/layouts/DriverLayout.vue"
 import AdminLayout from "@/layouts/AdminLayout.vue"
 
-// Auth Views
 import LoginView from "@/views/LoginView.vue"
 import RegisterView from "@/views/RegisterView.vue"
 
-// Client Views
 import HomeView from "@/views/client/HomeView.vue"
 import VendorsView from "@/views/client/VendorsView.vue"
 import VendorDetailView from "@/views/client/VendorDetailView.vue"
@@ -19,17 +16,14 @@ import CartView from "@/views/client/CartView.vue"
 import OrdersView from "@/views/client/OrdersView.vue"
 import OrderDetailView from "@/views/client/OrderDetailView.vue"
 
-// Vendor Views
 import VendorDashboardView from "@/views/vendor/DashboardView.vue"
 import VendorProductsView from "@/views/vendor/ProductsView.vue"
 import VendorOrdersView from "@/views/vendor/OrdersView.vue"
 
-// Driver Views
 import DriverDashboardView from "@/views/driver/DashboardView.vue"
 import DriverOrdersView from "@/views/driver/OrdersView.vue"
 import DriverVehiclesView from "@/views/driver/VehiclesView.vue"
 
-// Admin Views
 import AdminDashboardView from "@/views/admin/DashboardView.vue"
 import AdminUsersView from "@/views/admin/UsersView.vue"
 import AdminVendorsView from "@/views/admin/VendorsManagementView.vue"
@@ -37,7 +31,6 @@ import AdminDriversView from "@/views/admin/DriversManagementView.vue"
 import AdminOrdersView from "@/views/admin/OrdersManagementView.vue"
 
 const routes = [
-  // Auth Routes
   {
     path: "/login",
     name: "login",
@@ -51,7 +44,6 @@ const routes = [
     meta: { requiresGuest: true },
   },
 
-  // Client Routes
   {
     path: "/",
     component: ClientLayout,
@@ -90,7 +82,6 @@ const routes = [
     ],
   },
 
-  // Vendor Routes
   {
     path: "/vendor",
     component: VendorLayout,
@@ -120,7 +111,6 @@ const routes = [
     ],
   },
 
-  // Driver Routes
   {
     path: "/driver",
     component: DriverLayout,
@@ -144,7 +134,6 @@ const routes = [
     ],
   },
 
-  // Admin Routes
   {
     path: "/admin",
     component: AdminLayout,
@@ -184,22 +173,18 @@ const router = createRouter({
   routes,
 })
 
-// Navigation Guards
 router.beforeEach((to, from, next) => {
   const authStore = useAuthStore()
   const requiresAuth = to.matched.some((record) => record.meta.requiresAuth)
   const requiresGuest = to.matched.some((record) => record.meta.requiresGuest)
   const requiredRole = to.meta.role
 
-  // Check if route requires authentication
   if (requiresAuth && !authStore.isAuthenticated) {
     next("/login")
     return
   }
 
-  // Check if route requires guest (not authenticated)
   if (requiresGuest && authStore.isAuthenticated) {
-    // Redirect based on user role
     const roleRedirects = {
       cliente: "/",
       vendor: "/vendor/dashboard",
@@ -210,9 +195,7 @@ router.beforeEach((to, from, next) => {
     return
   }
 
-  // Check role-based access
   if (requiredRole && authStore.user?.rol !== requiredRole) {
-    // Redirect to appropriate dashboard
     const roleRedirects = {
       cliente: "/",
       vendor: "/vendor/dashboard",

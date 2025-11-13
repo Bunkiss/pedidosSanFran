@@ -1,6 +1,5 @@
 import axios from "axios"
 
-// Configuración base de axios
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || "http://localhost:3000",
   timeout: 10000,
@@ -9,7 +8,6 @@ const api = axios.create({
   },
 })
 
-// Interceptor para agregar token JWT a las peticiones
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("token")
@@ -23,7 +21,6 @@ api.interceptors.request.use(
   },
 )
 
-// Interceptor para manejar errores de respuesta
 api.interceptors.response.use(
   (response) => response,
   (error) => {
@@ -36,7 +33,6 @@ api.interceptors.response.use(
   },
 )
 
-// Auth API
 export const authAPI = {
   register: (data) => api.post("/auth/register", data),
   login: (data) => api.post("/auth/login", data),
@@ -45,7 +41,6 @@ export const authAPI = {
   updateProfile: (data) => api.put("/auth/profile", data),
 }
 
-// Users API
 export const userAPI = {
   getAll: (params) => api.get("/users", { params }),
   getById: (id) => api.get(`/users/${id}`),
@@ -54,7 +49,6 @@ export const userAPI = {
   delete: (id) => api.delete(`/users/${id}`),
 }
 
-// Vendors API
 export const vendorAPI = {
   getAll: (params) => api.get("/vendors", { params }),
   getById: (id) => api.get(`/vendors/${id}`),
@@ -66,7 +60,6 @@ export const vendorAPI = {
   updateSchedule: (vendorId, data) => api.put(`/vendors/${vendorId}/schedules`, data),
 }
 
-// Products API
 export const productAPI = {
   getAll: (params) => api.get("/products", { params }),
   getById: (id) => api.get(`/products/${id}`),
@@ -77,13 +70,12 @@ export const productAPI = {
   getByVendor: (vendorId) => {
     if (!vendorId) {
       console.warn("⚠️ No se puede obtener productos: vendorId no definido");
-      return Promise.resolve({ data: [] }); // devuelve vacío sin romper el flujo
+      return Promise.resolve({ data: [] });
     }
     return api.get(`/products/vendor/${vendorId}`);
   },
 }
 
-// Orders API
 export const orderAPI = {
   getAll: (params) => api.get("/orders", { params }),
   getById: (id) => api.get(`/orders/${id}`),
@@ -99,26 +91,24 @@ export const orderAPI = {
   acceptOrder: (orderId) => api.post(`/orders/${orderId}/accept`),
   completeOrder: (orderId) => api.post(`/orders/${orderId}/complete`),
 
-  getAvailableForDrivers: () => api.get("/orders/available"), // backend debe tener esta ruta
-  getByDriver: (driverId) => api.get(`/orders/driver/${driverId}`), // backend debe tener esta ruta
-  getByVendor: (vendorId) => api.get(`/orders/vendor/${vendorId}`), // backend debe tener esta ruta
+  getAvailableForDrivers: () => api.get("/orders/available"),
+  getByDriver: (driverId) => api.get(`/orders/driver/${driverId}`),
+  getByVendor: (vendorId) => api.get(`/orders/vendor/${vendorId}`),
   getByClient: (clientId) => api.get(`/orders/client/${clientId}`),
   pay: (id, data) => api.post(`/orders/${id}/pay`, data),
 }
 
-// Drivers API
 export const driverAPI = {
   getAll: (params) => api.get("/drivers", { params }),
   getById: (id) => api.get(`/drivers/${id}`),
   create: (data) => api.post("/drivers", data),
   update: (id, data) => api.put(`/drivers/${id}`, data),
   delete: (id) => api.delete(`/drivers/${id}`),
-  getAvailableOrders: () => api.get("/drivers/available-orders"), // ✅ importante
+  getAvailableOrders: () => api.get("/drivers/available-orders"),
   acceptOrder: (driverId, orderId) => api.post(`/drivers/${driverId}/accept/${orderId}`),
   
 }
 
-// Vehicles API
 export const vehiclesAPI = {
   getAll: (params) => api.get("/vehicles", { params }),
   getById: (id) => api.get(`/vehicles/${id}`),
@@ -130,7 +120,6 @@ export const vehiclesAPI = {
   createForDriver: (driverId, data) => api.post(`/driver/${driverId}/vehicles`, data),
 }
 
-// Payments API
 export const paymentAPI = {
   getAll: (params) => api.get("/payments", { params }),
   getById: (id) => api.get(`/payments/${id}`),
@@ -138,7 +127,6 @@ export const paymentAPI = {
   getMyPayments: () => api.get("/payments/my-payments"),
 }
 
-// Admin API
 export const adminAPI = {
   getStats: () => api.get("/admin/stats"),
   getUsers: (filters) => api.get("/admin/users", { params: filters }),

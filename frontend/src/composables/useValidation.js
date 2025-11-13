@@ -2,7 +2,6 @@ import { useField, useForm } from "vee-validate"
 import { toTypedSchema } from "@vee-validate/zod"
 import * as z from "zod"
 
-// ✅ Esquemas de validación
 export const loginSchema = z.object({
   email: z.string().email("Email inválido"),
   contraseña: z.string().min(6, "La contraseña debe tener al menos 6 caracteres"),
@@ -38,17 +37,13 @@ export const vehicleSchema = z.object({
   año: z.number().min(1900).max(new Date().getFullYear() + 1),
 })
 
-// ✅ Composable para validación dinámica (con soporte para useField)
 export function useValidation(schema) {
   const validationSchema = toTypedSchema(schema)
 
-  // 🟢 Inicializamos el formulario con el esquema
   const { handleSubmit, errors, values, resetForm } = useForm({
     validationSchema,
   })
 
-  // 🟢 Exponemos también el método useField() directamente
-  //     (ya conectado al contexto actual del form)
   const field = (name) => useField(name)
 
   return {
@@ -56,6 +51,6 @@ export function useValidation(schema) {
     errors,
     values,
     resetForm,
-    useField: field, // 👈 ahora devuelve useField vinculado al form
+    useField: field,
   }
 }

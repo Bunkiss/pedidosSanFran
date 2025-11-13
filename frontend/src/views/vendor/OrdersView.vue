@@ -2,14 +2,12 @@
   <div class="container py-4">
     <h2 class="mb-4">📦 Pedidos Recientes</h2>
 
-    <!-- Loading -->
     <div v-if="loading" class="text-center py-5">
       <div class="spinner-border text-primary" role="status">
         <span class="visually-hidden">Cargando...</span>
       </div>
     </div>
 
-    <!-- Tabla de pedidos -->
     <div v-else>
       <table class="table table-striped table-hover align-middle">
         <thead class="table-primary">
@@ -42,7 +40,6 @@
             </td>
             <td>{{ formatDate(order.createdAt) }}</td>
             <td>
-              <!-- Botón Ver Detalles -->
               <button
                 class="btn btn-sm btn-outline-primary me-2"
                 @click="viewOrderDetails(order)"
@@ -50,7 +47,6 @@
                 Ver Detalles
               </button>
 
-              <!-- Botón Aceptar pedido -->
               <button
                 v-if="order.estado === 'pendiente'"
                 class="btn btn-sm btn-success me-2"
@@ -59,7 +55,6 @@
                 Aceptar
               </button>
 
-              <!-- Botón En camino -->
               <button
                 v-if="order.estado === 'preparado'"
                 class="btn btn-sm btn-warning me-2"
@@ -68,7 +63,6 @@
                 En Camino
               </button>
 
-              <!-- Botón Completar pedido -->
               <button
                 v-if="order.estado === 'en_camino'"
                 class="btn btn-sm btn-success me-2"
@@ -77,7 +71,6 @@
                 Completar
               </button>
 
-              <!-- Botón Cancelar -->
               <button
                 v-if="order.estado !== 'completado' && order.estado !== 'cancelado'"
                 class="btn btn-sm btn-outline-danger"
@@ -109,7 +102,6 @@ const authStore = useAuthStore()
 const orders = ref([])
 const loading = ref(true)
 
-// 🔹 Cargar pedidos del vendor logueado
 const fetchOrders = async () => {
   loading.value = true
   try {
@@ -124,7 +116,6 @@ const fetchOrders = async () => {
   }
 }
 
-// 🔹 Actualizar estado del pedido
 const updateOrderStatus = async (orderId, estado) => {
   try {
     await orderAPI.updateStatus(orderId, estado)
@@ -136,7 +127,6 @@ const updateOrderStatus = async (orderId, estado) => {
   }
 }
 
-// 🔹 Formato de fecha
 const formatDate = (dateStr) => {
   if (!dateStr) return '—'
   return new Date(dateStr).toLocaleString('es-AR', {
@@ -145,13 +135,11 @@ const formatDate = (dateStr) => {
   })
 }
 
-// 🔹 Formato de precio
 const formatPrice = (value) => {
   const num = Number(value)
   return isNaN(num) ? '0.00' : num.toFixed(2)
 }
 
-// 🔹 Ver detalles
 const viewOrderDetails = (order) => {
   console.log('🧭 Navegando al detalle del pedido:', order.id)
   router.push({ name: 'VendorOrderDetails', params: { id: order.id } })

@@ -3,7 +3,6 @@
     <h2 class="mb-4">Tu Carrito</h2>
 
     <div class="row">
-      <!-- 🛒 Lista de productos -->
       <div class="col-lg-8">
         <div v-if="cartStore.items.length > 0">
           <div class="card mb-3" v-for="item in cartStore.items" :key="item.id">
@@ -59,7 +58,6 @@
             </div>
           </div>
 
-          <!-- 🚚 Dirección -->
           <div class="card mb-3">
             <div class="card-body">
               <h5 class="card-title mb-3">Dirección de Entrega</h5>
@@ -78,7 +76,6 @@
             </div>
           </div>
 
-          <!-- 💳 Pago -->
           <div class="card mb-3">
             <div class="card-body">
               <h5 class="card-title mb-3">Método de Pago</h5>
@@ -112,7 +109,6 @@
           </div>
         </div>
 
-        <!-- 🕳 Carrito vacío -->
         <div v-else class="text-center py-5">
           <i class="bi bi-cart-x fs-1 text-muted mb-3"></i>
           <h4 class="text-muted">Tu carrito está vacío</h4>
@@ -123,7 +119,6 @@
         </div>
       </div>
 
-      <!-- 🧾 Resumen -->
       <div class="col-lg-4" v-if="cartStore.items.length > 0">
         <div class="card sticky-top" style="top: 20px;">
           <div class="card-body">
@@ -138,7 +133,6 @@
               <span>${{ cartStore.deliveryFee.toFixed(2) }}</span>
             </div>
 
-            <!-- 💰 Propina -->
             <div class="mb-3">
               <label class="form-label small">Propina para el repartidor:</label>
               <div class="btn-group w-100 mb-2" role="group">
@@ -244,7 +238,6 @@ const placeOrder = async () => {
     const response = await orderAPI.create(orderData)
     const orderId = response.data.id
 
-    // 💳 Confirmar pago y cambiar estado a "preparado"
     await orderAPI.pay(orderId, {
       monto: cartStore.total,
       metodo: paymentMethod.value

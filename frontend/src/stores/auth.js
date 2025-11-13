@@ -3,13 +3,11 @@ import { ref, computed } from "vue"
 import { authAPI } from "@/helpers/api"
 
 export const useAuthStore = defineStore("auth", () => {
-  // --- STATE ---
   const user = ref(null)
   const token = ref(null)
   const loading = ref(false)
   const error = ref(null)
 
-  // --- GETTERS ---
   const isAuthenticated = computed(() => !!token.value)
   const userRole = computed(() => user.value?.rol || null)
   const isClient = computed(() => userRole.value === "cliente")
@@ -17,7 +15,6 @@ export const useAuthStore = defineStore("auth", () => {
   const isDriver = computed(() => userRole.value === "driver")
   const isAdmin = computed(() => userRole.value === "admin")
 
-  // --- ACTIONS ---
   const initialize = () => {
     const savedToken = localStorage.getItem("token")
     const savedUser = localStorage.getItem("user")
@@ -36,7 +33,6 @@ export const useAuthStore = defineStore("auth", () => {
       const response = await authAPI.login(credentials)
       const { token: newToken, user: newUser } = response.data
 
-      // Guardar en estado y almacenamiento local
       token.value = newToken
       user.value = newUser
       localStorage.setItem("token", newToken)
@@ -60,7 +56,6 @@ export const useAuthStore = defineStore("auth", () => {
       const response = await authAPI.register(userData)
       const { token: newToken, user: newUser } = response.data
 
-      // ✅ Validar respuesta del backend
       if (!newUser || !newToken) {
         throw new Error("La API no devolvió usuario o token")
       }
@@ -83,7 +78,6 @@ export const useAuthStore = defineStore("auth", () => {
 
   const logout = async () => {
     try {
-      // opcional: podrías hacer await authAPI.logout() si lo implementás en backend
       console.log("Cerrando sesión...")
     } catch (err) {
       console.error("Error al cerrar sesión:", err)
@@ -114,7 +108,6 @@ export const useAuthStore = defineStore("auth", () => {
     }
   }
 
-  // --- EXPORTAR ESTADO Y ACCIONES ---
   return {
     user,
     token,

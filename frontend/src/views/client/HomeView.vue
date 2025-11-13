@@ -1,6 +1,5 @@
 <template>
   <div class="container py-5">
-    <!-- Hero Section -->
     <div class="row mb-5">
       <div class="col-lg-8 mx-auto text-center">
         <h1 class="display-4 fw-bold mb-3">Bienvenido a Rappi Clone</h1>
@@ -22,7 +21,6 @@
       </div>
     </div>
 
-    <!-- Categories -->
     <div class="row mb-5">
       <div class="col-12">
         <h3 class="mb-4">Categorías</h3>
@@ -47,21 +45,18 @@
       </div>
     </div>
 
-    <!-- Featured Vendors -->
     <div class="row mb-4">
       <div class="col-12">
         <h3 class="mb-4">Restaurantes Destacados</h3>
       </div>
     </div>
 
-    <!-- Loading State -->
     <div v-if="loading" class="text-center py-5">
       <div class="spinner-border text-primary" role="status">
         <span class="visually-hidden">Cargando...</span>
       </div>
     </div>
 
-    <!-- Vendors Grid -->
     <div v-else-if="vendors.length > 0" class="row g-4">
       <div
         v-for="vendor in vendors"
@@ -94,7 +89,6 @@
       </div>
     </div>
 
-    <!-- Empty State -->
     <div v-else class="text-center py-5">
       <i class="bi bi-shop fs-1 text-muted mb-3"></i>
       <p class="text-muted">No se encontraron restaurantes</p>
@@ -106,14 +100,13 @@
 import { ref, onMounted } from "vue"
 import { useRouter } from "vue-router"
 import api, { vendorAPI } from "@/helpers/api"
-import defaultRestaurant from "@/assets/default-restaurant.jpg" // ✅ Import correcto
+import defaultRestaurant from "@/assets/default-restaurant.jpg" 
 
 const router = useRouter()
 const vendors = ref([])
 const loading = ref(false)
 const searchQuery = ref("")
 
-// Categorías disponibles
 const categories = [
   { id: 1, name: "Restaurantes", icon: "bi-shop" },
   { id: 2, name: "Mercado", icon: "bi-cart" },
@@ -123,7 +116,6 @@ const categories = [
   { id: 6, name: "Flores", icon: "bi-flower1" },
 ]
 
-// Imagen segura (si no hay imagen o hay error)
 const getVendorImage = (vendor) => {
   return vendor.imagen && vendor.imagen.startsWith("http")
     ? vendor.imagen
@@ -134,7 +126,6 @@ const handleImageError = (event) => {
   event.target.src = defaultRestaurant
 }
 
-// Obtener vendors desde la API
 const fetchVendors = async () => {
   loading.value = true
   try {

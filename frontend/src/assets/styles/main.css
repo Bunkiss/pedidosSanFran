@@ -1,10 +1,6 @@
-/* Removiendo todas las directivas de Tailwind y usando solo Bootstrap + CSS estándar */
-
-/* Bootstrap CSS - Esto debe cargarse primero */
 @import "bootstrap/dist/css/bootstrap.min.css";
 @import "bootstrap-icons/font/bootstrap-icons.css";
 
-/* Variables CSS personalizadas */
 :root {
   --color-primary: #ff2d55;
   --color-primary-dark: #e6194a;
@@ -18,14 +14,12 @@
   --color-light: #f8f9fa;
 }
 
-/* Reset básico */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/* Estilos globales */
 body {
   font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -38,7 +32,6 @@ body {
   min-height: 100vh;
 }
 
-/* Sobrescribir colores primarios de Bootstrap */
 .btn-primary {
   background-color: var(--color-primary);
   border-color: var(--color-primary);
@@ -71,7 +64,6 @@ body {
   background-color: var(--color-primary) !important;
 }
 
-/* Estilos para cards de productos */
 .product-card {
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   cursor: pointer;
@@ -82,14 +74,12 @@ body {
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
 }
 
-/* Navbar personalizado */
 .navbar-brand {
   font-weight: 700;
   font-size: 1.5rem;
   color: var(--color-primary) !important;
 }
 
-/* Badge para contador de carrito */
 .badge-cart {
   position: absolute;
   top: -8px;
@@ -102,14 +92,12 @@ body {
   justify-content: center;
 }
 
-/* Badges de estado */
 .badge-status {
   font-size: 0.75rem;
   padding: 0.35rem 0.75rem;
   font-weight: 500;
 }
 
-/* Sidebar */
 .sidebar {
   min-height: 100vh;
   background-color: #ffffff;
@@ -142,7 +130,6 @@ body {
   font-size: 1.25rem;
 }
 
-/* Cards personalizados */
 .card {
   border-radius: 0.75rem;
   border: 1px solid #dee2e6;
@@ -154,14 +141,12 @@ body {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Inputs personalizados */
 .form-control:focus,
 .form-select:focus {
   border-color: var(--color-primary);
   box-shadow: 0 0 0 0.25rem rgba(255, 45, 85, 0.15);
 }
 
-/* Tablas */
 .table {
   background-color: white;
 }
@@ -170,7 +155,6 @@ body {
   background-color: #f8f9fa;
 }
 
-/* Animaciones */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -186,14 +170,12 @@ body {
   animation: fadeIn 0.3s ease;
 }
 
-/* Loading spinner */
 .spinner-border-sm {
   width: 1rem;
   height: 1rem;
   border-width: 0.15em;
 }
 
-/* Utilidades adicionales */
 .cursor-pointer {
   cursor: pointer;
 }
@@ -212,7 +194,6 @@ body {
   overflow: hidden;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .sidebar {
     position: fixed;

@@ -2,19 +2,16 @@
   <div class="container py-4">
     <h2 class="mb-4">Mis Pedidos</h2>
 
-    <!-- ⏳ Loading -->
     <div v-if="loading" class="text-center py-5">
       <div class="spinner-border text-primary" role="status">
         <span class="visually-hidden">Cargando...</span>
       </div>
     </div>
 
-    <!-- 📦 Lista de pedidos -->
     <div v-else-if="orders.length > 0">
       <div class="card mb-3" v-for="order in orders" :key="order.id">
         <div class="card-body">
           <div class="row align-items-center">
-            <!-- 🧾 Icono -->
             <div class="col-md-2">
               <div class="text-center">
                 <i class="bi bi-receipt fs-1 text-primary"></i>
@@ -22,7 +19,6 @@
               </div>
             </div>
 
-            <!-- 🏪 Info del restaurante -->
             <div class="col-md-4">
               <h5 class="mb-1">
                 {{ order.vendor?.nombre || order.vendorNombre || 'Restaurante' }}
@@ -37,7 +33,6 @@
               </p>
             </div>
 
-            <!-- 💰 Total -->
             <div class="col-md-3">
               <div class="small text-muted">Total</div>
               <div class="fs-5 fw-bold text-success">
@@ -45,7 +40,6 @@
               </div>
             </div>
 
-            <!-- 🔍 Ver Detalle -->
             <div class="col-md-3 text-end">
               <button 
                 class="btn btn-primary"
@@ -59,7 +53,6 @@
       </div>
     </div>
 
-    <!-- 🚫 Estado vacío -->
     <div v-else class="text-center py-5">
       <i class="bi bi-bag-x fs-1 text-muted mb-3"></i>
       <h4 class="text-muted">No tienes pedidos</h4>
@@ -82,7 +75,6 @@ const authStore = useAuthStore()
 const orders = ref([])
 const loading = ref(false)
 
-// 🧩 Colores según estado
 const getStatusClass = (status) => {
   const classes = {
     pendiente: 'bg-warning',
@@ -97,7 +89,6 @@ const getStatusClass = (status) => {
   return classes[status] || 'bg-secondary'
 }
 
-// 🧩 Texto según estado
 const getStatusText = (status) => {
   const texts = {
     pendiente: 'Pendiente',
@@ -112,13 +103,11 @@ const getStatusText = (status) => {
   return texts[status] || status
 }
 
-// 🧾 Formateo de precios (seguro)
 const formatPrice = (value) => {
   const num = Number(value)
   return isNaN(num) ? '0.00' : num.toFixed(2)
 }
 
-// 🗓️ Formateo de fecha
 const formatDate = (dateStr) => {
   if (!dateStr) return 'Fecha no disponible'
   const date = new Date(dateStr)
@@ -128,7 +117,6 @@ const formatDate = (dateStr) => {
   })
 }
 
-// 📦 Obtener pedidos del cliente
 const fetchOrders = async () => {
   loading.value = true
   try {
@@ -141,12 +129,10 @@ const fetchOrders = async () => {
   }
 }
 
-// 🔍 Ver pedido individual
 const viewOrder = (orderId) => {
   router.push({ name: 'order-detail', params: { id: orderId } })
 }
 
-// 🔄 Cargar al iniciar
 onMounted(() => {
   fetchOrders()
 })

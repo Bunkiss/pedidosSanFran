@@ -1,6 +1,5 @@
 <template>
   <div class="min-vh-100 bg-light">
-    <!-- Converted to Bootstrap navbar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom sticky-top">
       <div class="container">
         <router-link to="/" class="navbar-brand text-primary">

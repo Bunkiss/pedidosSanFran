@@ -2,7 +2,6 @@
   <div class="container-fluid py-4">
     <h2 class="mb-4">Dashboard del Vendedor</h2>
 
-    <!-- Stats Cards -->
     <div class="row g-4 mb-4">
       <div class="col-md-3">
         <div class="card text-white bg-primary">
@@ -58,7 +57,6 @@
       </div>
     </div>
 
-    <!-- Recent Orders -->
     <div class="card">
       <div class="card-header d-flex justify-content-between align-items-center">
         <h5 class="mb-0">Pedidos Recientes</h5>
@@ -172,11 +170,9 @@ const formatDate = (date) => {
 const fetchDashboardData = async () => {
   loading.value = true
   try {
-    // Fetch recent orders
     const ordersResponse = await orderAPI.getByVendor(authStore.user.vendorId)
     recentOrders.value = ordersResponse.data.slice(0, 10)
     
-    // Calculate stats
     const today = new Date().toDateString()
     const todayOrders = recentOrders.value.filter(o => 
     new Date(o.createdAt).toDateString() === today
@@ -188,8 +184,6 @@ const fetchDashboardData = async () => {
       o.estado === 'pendiente' || o.estado === 'confirmado'
     ).length
 
-    
-    // Fetch products count
     const productsResponse = await productAPI.getByVendor(authStore.user.vendorId)
     stats.value.totalProducts = productsResponse.data.length
   } catch (error) {

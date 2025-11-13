@@ -8,7 +8,6 @@
         </div>
 
         <form @submit.prevent="onSubmit" class="space-y-6">
-          <!-- Email -->
           <div>
             <label for="email" class="block text-sm font-medium mb-2">Email</label>
             <input
@@ -22,7 +21,6 @@
             <p v-if="errors.email" class="text-red-500 text-sm mt-1">{{ errors.email }}</p>
           </div>
 
-          <!-- Contraseña -->
           <div>
             <label for="contraseña" class="block text-sm font-medium mb-2">Contraseña</label>
             <input
@@ -36,12 +34,10 @@
             <p v-if="errors.contraseña" class="text-red-500 text-sm mt-1">{{ errors.contraseña }}</p>
           </div>
 
-          <!-- Error general -->
           <div v-if="authStore.error" class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
             {{ authStore.error }}
           </div>
 
-          <!-- Botón -->
           <button
             type="submit"
             :disabled="authStore.loading"
@@ -52,7 +48,6 @@
           </button>
         </form>
 
-        <!-- Enlace a registro -->
         <div class="mt-6 text-center">
           <p class="text-[--color-text-secondary]">
             ¿No tienes cuenta?
@@ -74,7 +69,6 @@ import { useValidation, loginSchema } from '@/composables/useValidation'
 const router = useRouter()
 const authStore = useAuthStore()
 
-// ✅ useField ya devuelve una ref lista para usar con v-model
 const { handleSubmit, errors, useField } = useValidation(loginSchema)
 const { value: email } = useField('email')
 const { value: contraseña } = useField('contraseña')

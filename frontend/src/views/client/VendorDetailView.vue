@@ -1,6 +1,5 @@
 <template>
   <div class="container py-4">
-    <!-- Loading -->
     <div v-if="loading" class="text-center py-5">
       <div class="spinner-border text-primary" role="status">
         <span class="visually-hidden">Cargando...</span>
@@ -8,7 +7,6 @@
     </div>
 
     <div v-else-if="vendor">
-      <!-- Vendor Header -->
       <div class="card mb-4">
         <img 
           :src="getVendorImage(vendor)"
@@ -34,12 +32,10 @@
         </div>
       </div>
 
-      <!-- Products Section -->
       <div class="row mb-4">
         <div class="col-md-8">
           <h4 class="mb-3">Menú</h4>
 
-          <!-- Search Products -->
           <div class="mb-3">
             <input 
               type="text" 
@@ -49,7 +45,6 @@
             >
           </div>
 
-          <!-- Products List -->
           <div v-if="filteredProducts.length > 0" class="row g-3">
             <div 
               v-for="product in filteredProducts" 
@@ -91,14 +86,12 @@
             </div>
           </div>
 
-          <!-- Empty State -->
           <div v-else class="text-center py-5">
             <i class="bi bi-search fs-1 text-muted mb-3"></i>
             <p class="text-muted">No se encontraron productos</p>
           </div>
         </div>
 
-        <!-- Cart Sidebar -->
         <div class="col-md-4">
           <div class="card sticky-top" style="top: 20px;">
             <div class="card-body">
@@ -176,7 +169,6 @@ const products = ref([])
 const loading = ref(false)
 const searchQuery = ref('')
 
-// ✅ Imagen segura para vendor
 const getVendorImage = (vendor) => {
   if (!vendor.imagen || !vendor.imagen.startsWith('http')) {
     return defaultImage
@@ -184,7 +176,6 @@ const getVendorImage = (vendor) => {
   return vendor.imagen
 }
 
-// ✅ Imagen segura para producto
 const getProductImage = (product) => {
   if (!product.imagen || !product.imagen.startsWith('http')) {
     return defaultImage

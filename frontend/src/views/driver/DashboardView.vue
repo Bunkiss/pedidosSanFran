@@ -35,7 +35,6 @@ const authStore = useAuthStore()
 const availableOrders = ref([])
 const loading = ref(false)
 
-// 🔹 Alias opcional para compatibilidad con templates antiguos
 const orders = availableOrders
 
 const fetchAvailableOrders = async () => {

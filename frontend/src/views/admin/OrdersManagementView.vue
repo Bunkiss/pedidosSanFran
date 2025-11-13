@@ -2,7 +2,6 @@
   <div>
     <h1 class="text-3xl font-bold text-gray-900 mb-8">Gestión de Pedidos</h1>
 
-    <!-- Filters -->
     <div class="bg-white rounded-xl p-6 border border-gray-200 mb-6">
       <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
         <input
@@ -37,7 +36,6 @@
       </div>
     </div>
 
-    <!-- Orders Table -->
     <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
       <table class="w-full">
         <thead class="bg-gray-50 border-b border-gray-200">

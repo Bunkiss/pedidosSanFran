@@ -2,7 +2,6 @@
   <div>
     <h1 class="text-3xl font-bold text-gray-900 mb-8">Dashboard Administrativo</h1>
 
-    <!-- Stats Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
       <div
         v-for="stat in stats"
@@ -27,9 +26,7 @@
       </div>
     </div>
 
-    <!-- Charts Row -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-      <!-- Revenue Chart -->
       <div class="bg-white rounded-xl p-6 border border-gray-200">
         <h2 class="text-lg font-semibold text-gray-900 mb-4">Ingresos Mensuales</h2>
         <div class="h-64 flex items-end justify-between gap-2">
@@ -46,7 +43,6 @@
         </div>
       </div>
 
-      <!-- Orders by Status -->
       <div class="bg-white rounded-xl p-6 border border-gray-200">
         <h2 class="text-lg font-semibold text-gray-900 mb-4">Pedidos por Estado</h2>
         <div class="space-y-4">
@@ -75,7 +71,6 @@
       </div>
     </div>
 
-    <!-- Recent Activity -->
     <div class="bg-white rounded-xl border border-gray-200">
       <div class="p-6 border-b border-gray-200">
         <h2 class="text-lg font-semibold text-gray-900">Actividad Reciente</h2>
@@ -163,20 +158,17 @@ onMounted(async () => {
   try {
     const response = await adminAPI.getStats()
     
-    // Update stats
     stats.value[0].value = response.data.totalUsers.toString()
     stats.value[1].value = response.data.activeVendors.toString()
     stats.value[2].value = response.data.activeDrivers.toString()
     stats.value[3].value = response.data.todayOrders.toString()
 
-    // Update orders by status
     const totalOrders = response.data.ordersByStatus.reduce((sum, s) => sum + s.count, 0)
     ordersByStatus.value = response.data.ordersByStatus.map(status => ({
       ...status,
       percentage: totalOrders > 0 ? (status.count / totalOrders) * 100 : 0
     }))
 
-    // Update recent activity
     recentActivity.value = response.data.recentActivity
   } catch (error) {
     console.error('Error loading dashboard:', error)

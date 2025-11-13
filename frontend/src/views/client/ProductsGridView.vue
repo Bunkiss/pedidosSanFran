@@ -1,6 +1,5 @@
 <template>
   <div class="container py-5">
-    <!-- Created products grid view with Bootstrap -->
     <div class="row mb-4">
       <div class="col">
         <h1 class="display-5 fw-bold mb-3">Productos Destacados</h1>
@@ -8,7 +7,6 @@
       </div>
     </div>
 
-    <!-- Filters -->
     <div class="row mb-4">
       <div class="col-md-4">
         <input 
@@ -36,14 +34,12 @@
       </div>
     </div>
 
-    <!-- Loading State -->
     <div v-if="loading" class="text-center py-5">
       <div class="spinner-border text-primary" role="status">
         <span class="visually-hidden">Cargando...</span>
       </div>
     </div>
 
-    <!-- Products Grid -->
     <div v-else class="row g-4">
       <div 
         v-for="product in filteredProducts" 
@@ -87,7 +83,6 @@
       </div>
     </div>
 
-    <!-- Empty State -->
     <div v-if="!loading && filteredProducts.length === 0" class="text-center py-5">
       <i class="bi bi-inbox fs-1 text-muted"></i>
       <p class="text-muted mt-3">No se encontraron productos</p>
@@ -113,7 +108,6 @@ const sortBy = ref('name')
 const filteredProducts = computed(() => {
   let filtered = products.value
 
-  // Filter by search
   if (searchQuery.value) {
     filtered = filtered.filter(p => 
       p.nombre.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
@@ -121,12 +115,10 @@ const filteredProducts = computed(() => {
     )
   }
 
-  // Filter by category
   if (selectedCategory.value) {
     filtered = filtered.filter(p => p.categoria === selectedCategory.value)
   }
 
-  // Sort
   if (sortBy.value === 'price-asc') {
     filtered = [...filtered].sort((a, b) => a.precio - b.precio)
   } else if (sortBy.value === 'price-desc') {

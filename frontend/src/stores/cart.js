@@ -2,13 +2,11 @@ import { defineStore } from "pinia"
 import { ref, computed } from "vue"
 
 export const useCartStore = defineStore("cart", () => {
-  // 📦 STATE
   const items = ref([])
   const vendor = ref(null)
-  const deliveryFee = ref(200) // 💰 costo de envío
-  const tip = ref(0) // 💸 propina
+  const deliveryFee = ref(200) 
+  const tip = ref(0) 
 
-  // 💡 GETTERS
   const itemCount = computed(() =>
     items.value.reduce((total, item) => total + item.cantidad, 0)
   )
@@ -21,9 +19,7 @@ export const useCartStore = defineStore("cart", () => {
 
   const isEmpty = computed(() => items.value.length === 0)
 
-  // 🧩 ACTIONS
   const addItem = (product, quantity = 1) => {
-    // ⚠️ Evitar mezclar vendors
     if (vendor.value && vendor.value.id !== product.vendorId) {
       if (
         !confirm(
@@ -35,7 +31,6 @@ export const useCartStore = defineStore("cart", () => {
       clearCart()
     }
 
-    // Establecer vendor si es el primero
     if (!vendor.value) {
       vendor.value = {
         id: product.vendorId,
@@ -80,7 +75,6 @@ export const useCartStore = defineStore("cart", () => {
     }
   }
 
-  // 🔼 Incrementar / 🔽 Decrementar
   const incrementItem = (productId) => {
     const item = items.value.find((i) => i.id === productId)
     if (item) {
@@ -105,13 +99,11 @@ export const useCartStore = defineStore("cart", () => {
     persist()
   }
 
-  // 💸 Propina
   const setTip = (amount) => {
     tip.value = amount
     persist()
   }
 
-  // 💾 Persistencia
   const persist = () => {
     localStorage.setItem(
       "cart",
@@ -133,7 +125,6 @@ export const useCartStore = defineStore("cart", () => {
     }
   }
 
-  // 🧭 Retorno
   return {
     items,
     vendor,
